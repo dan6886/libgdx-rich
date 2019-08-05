@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tileset name="land" tilewidth="32" tileheight="24" tilecount="10" columns="0">
+ <grid orientation="orthogonal" width="1" height="1"/>
+ <tile id="0">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/07/small-03994_1-1.png"/>
+ </tile>
+ <tile id="1">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/07/small-03996_1-1.png"/>
+ </tile>
+ <tile id="2">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/07/small-03997_1-1.png"/>
+ </tile>
+ <tile id="3">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/07/small-03993_1-1.png"/>
+ </tile>
+ <tile id="4">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/08/small-04010_1-1.png"/>
+ </tile>
+ <tile id="5">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/08/small-04008_1-1.png"/>
+ </tile>
+ <tile id="6">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/08/small-04009_1-1.png"/>
+ </tile>
+ <tile id="7">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/08/small-04011_1-1.png"/>
+ </tile>
+ <tile id="8">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/08/small-04052_1-1.png"/>
+ </tile>
+ <tile id="9">
+  <image width="32" height="24" source="C:/Users/ubt/Downloads/大富翁OL内测版-图标-爱给网/08/small-04053_1-1.png"/>
+ </tile>
+</tileset>
