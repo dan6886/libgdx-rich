@@ -23,6 +23,7 @@ import com.mygdx.game.entity.LandPoint;
 import com.mygdx.game.entity.WayPoint;
 import com.mygdx.game.events.BaseEvent;
 import com.mygdx.game.events.StartWalkEvent;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 
 import java.util.List;
 import java.util.Random;
@@ -47,6 +48,7 @@ public class MainGame extends ApplicationAdapter {
      * 从左到右 col 0-->10
      */
     private WayPoint[][] wayPointArray = new WayPoint[Constants.ROW_NUM][Constants.COL_NUM];
+    private LandPoint[][] landPointArray = new LandPoint[Constants.ROW_NUM][Constants.COL_NUM];
 
     @Override
     public void create() {
@@ -72,20 +74,38 @@ public class MainGame extends ApplicationAdapter {
         init();
         actor1.setCurrent(wayPointArray[0][0]);
         actor1.setPre(wayPointArray[0][0]);
-        new StartWalkEvent("startwalk", 3000).happen();
+        new StartWalkEvent("startwalk", 30).happen();
     }
 
     private void init() {
+        MapObjects landpoint = map.getLayers().get("landpoint").getObjects();
+        for (MapObject object : landpoint) {
+            Float x = object.getProperties().get("x", Float.class);
+            Float y = object.getProperties().get("y", Float.class);
+            int col = (int) (x / cell_width);
+            int row = (int) (y / cell_height);
+            landPointArray[row][col] = new LandPoint(object, row, col, x.intValue(), y.intValue());
+            System.out.println(x + "|" + y + "|col:" + col + "row:" + row);
+        }
+
         MapObjects waypoints = map.getLayers().get("waypoint").getObjects();
         for (MapObject object : waypoints) {
             Float x = object.getProperties().get("x", Float.class);
             Float y = object.getProperties().get("y", Float.class);
             int col = (int) (x / cell_width);
             int row = (int) (y / cell_height);
-            wayPointArray[row][col] = new WayPoint(object, row, col, x.intValue(), y.intValue());
-            System.out.println(x + "|" + y + "|col:" + col + "row:" + row);
+            Integer land_row = object.getProperties().get("land_row", Integer.class);
+            Integer land_col = object.getProperties().get("land_col", Integer.class);
+
+            LandPoint related = landPointArray[land_row][land_col];
+            if (null == related) {
+                related = LandPoint.NOTHINIG;
+            }
+            wayPointArray[row][col] = new WayPoint(object, row, col, x.intValue(), y.intValue(), related);
+            System.out.println("waypoint" + x + "|" + y + "|col:" + col + "row:" + row);
         }
-        TiledMapUtils.removeTiled(map, "ground", waypoints.get(11));
+
+
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.mygdx.game.entity.WayPoint;
 
 import java.util.concurrent.CompletableFuture;
 
-public class StartWalkEvent extends BaseEvent {
+public class StartWalkEvent extends BaseEvent <StartWalkEvent.StartWalkResult>{
     private String name = "";
     private int steps;
 
@@ -37,5 +37,14 @@ public class StartWalkEvent extends BaseEvent {
         ResultReporter<WayPoint> reporter = new ResultReporter<>();
         MainGame.Instance.startWalk(reporter);
         return reporter;
+    }
+
+    @Override
+    public StartWalkResult getData() {
+        return new StartWalkResult();
+    }
+
+    public static class StartWalkResult {
+
     }
 }

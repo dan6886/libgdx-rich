@@ -1,8 +1,10 @@
 package com.mygdx.game.events;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.concurrent.*;
 
-public class BaseEvent implements Runnable {
+public class BaseEvent<T> implements Runnable {
     private String name = "";
 
 
@@ -13,7 +15,6 @@ public class BaseEvent implements Runnable {
 
     public BaseEvent(String name) {
         this.name = name;
-        this.future = future;
     }
 
     public void happen() {
@@ -33,11 +34,10 @@ public class BaseEvent implements Runnable {
         return future;
     }
 
-    public void waitFor(BaseEvent cxEvent) {
+    public <S> S waitFor(BaseEvent<S> event) {
         CompletableFuture<Void> future = CompletableFuture
-                .runAsync(cxEvent, executors)
-                .whenComplete((s, throwable) -> System.out.println(cxEvent.name + "任务结束"));
-
+                .runAsync(event, executors)
+                .whenComplete((s, throwable) -> System.out.println(event.name + "任务结束"));
 
         try {
             future.get();
@@ -46,20 +46,24 @@ public class BaseEvent implements Runnable {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+        Class<S> childClass = getModelName(event);
+        return childClass.cast(event.getData());
     }
 
-    public void waitSelf() {
-        try {
-            future.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+    public T getData() {
+        return null;
     }
 
-    public void continueSelf() {
-
+    /**
+     * 获取实体类型名称
+     * 子类可覆盖此方法，返回：泛型T的类名
+     *
+     * @return
+     */
+    protected <K> Class<K> getModelName(Object obj) {
+        Type t = obj.getClass().getGenericSuperclass();
+        ParameterizedType p = (ParameterizedType) t;
+        return (Class<K>) p.getActualTypeArguments()[0];
     }
 
     @Override
@@ -74,19 +78,10 @@ public class BaseEvent implements Runnable {
     public static class ResultReporter<T> {
         Exchanger<T> exchanger = new Exchanger<>();
 
-        private boolean hasReport = false;
-
         public ResultReporter() {
         }
 
         public void report(T t) {
-            synchronized (this) {
-                if (hasReport) {
-                    return;
-                }
-
-                hasReport = true;
-            }
             try {
                 exchanger.exchange(t);
             } catch (InterruptedException e) {

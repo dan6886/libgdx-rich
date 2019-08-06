@@ -6,7 +6,7 @@ import com.mygdx.game.entity.LandPoint;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
-public class HandleLandEvent extends BaseEvent {
+public class HandleLandEvent extends BaseEvent<HandleLandEvent.HandleLandResult> {
     private String name = "";
     private LandPoint point;
 
@@ -37,5 +37,14 @@ public class HandleLandEvent extends BaseEvent {
         // 这里调用出去,这个方法最好是在其他线程里面跑
         MainGame.Instance.consumeOrinvest(point, reporter);
         return reporter;
+    }
+
+    @Override
+    public HandleLandResult getData() {
+        return new HandleLandResult();
+    }
+
+    public static class HandleLandResult {
+
     }
 }

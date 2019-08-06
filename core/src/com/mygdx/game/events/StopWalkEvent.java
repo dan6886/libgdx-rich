@@ -2,10 +2,12 @@ package com.mygdx.game.events;
 
 import com.mygdx.game.MainGame;
 import com.mygdx.game.entity.WayPoint;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
+import java.util.SplittableRandom;
 import java.util.concurrent.CompletableFuture;
 
-public class StopWalkEvent extends BaseEvent {
+public class StopWalkEvent extends BaseEvent<StopWalkEvent.StopWalkResult> {
     private String name = "";
     private WayPoint point;
 
@@ -49,5 +51,14 @@ public class StopWalkEvent extends BaseEvent {
         // 这里调用出去,这个方法最好是在其他线程里面跑
         MainGame.Instance.stopAt(point, reporter);
         return reporter;
+    }
+
+    @Override
+    public StopWalkResult getData() {
+        return new StopWalkResult();
+    }
+
+    public static class StopWalkResult {
+
     }
 }
