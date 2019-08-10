@@ -1,17 +1,18 @@
 package com.mygdx.game.events;
 
+import com.mygdx.game.Actor1;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.entity.LandPoint;
 
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 public class HandleLandEvent extends BaseEvent<HandleLandEvent.HandleLandResult> {
     private String name = "";
     private LandPoint point;
-
-    public HandleLandEvent(String name, LandPoint point) {
+    private Actor1 player;
+    public HandleLandEvent(Actor1 player, String name, LandPoint point) {
         super(name);
+        this.player = player;
         this.point = point;
     }
 
@@ -26,16 +27,16 @@ public class HandleLandEvent extends BaseEvent<HandleLandEvent.HandleLandResult>
 
     @Override
     public void run() {
-        System.out.println(getName() + "开始" + Thread.currentThread().getId());
+        System.out.println(getName() + "开始" + Thread.currentThread().getName());
         consumeOrinvest(point).waitReport();
         System.out.println(getName() + "结束");
         complete(getName());
     }
 
-    public ResultReporter<LandPoint> consumeOrinvest(LandPoint point) {
-        ResultReporter<LandPoint> reporter = new ResultReporter<>();
+    public ResultWaiter<LandPoint> consumeOrinvest(LandPoint point) {
+        ResultWaiter<LandPoint> reporter = new ResultWaiter<>();
         // 这里调用出去,这个方法最好是在其他线程里面跑
-        MainGame.Instance.consumeOrinvest(point, reporter);
+        MainGame.Instance.consumeOrInvest(player,point, reporter);
         return reporter;
     }
 

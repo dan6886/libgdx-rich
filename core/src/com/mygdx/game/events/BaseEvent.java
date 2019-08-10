@@ -2,6 +2,7 @@ package com.mygdx.game.events;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.concurrent.*;
 
 public class BaseEvent<T> implements Runnable {
@@ -75,10 +76,10 @@ public class BaseEvent<T> implements Runnable {
         future.complete(value);
     }
 
-    public static class ResultReporter<T> {
+    public static class ResultWaiter<T> {
         Exchanger<T> exchanger = new Exchanger<>();
 
-        public ResultReporter() {
+        public ResultWaiter() {
         }
 
         public void report(T t) {
@@ -98,4 +99,6 @@ public class BaseEvent<T> implements Runnable {
             return null;
         }
     }
+
+
 }

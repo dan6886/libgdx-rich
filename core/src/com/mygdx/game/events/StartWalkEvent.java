@@ -1,16 +1,19 @@
 package com.mygdx.game.events;
 
+import com.mygdx.game.Actor1;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.entity.WayPoint;
 
 import java.util.concurrent.CompletableFuture;
 
-public class StartWalkEvent extends BaseEvent <StartWalkEvent.StartWalkResult>{
+public class StartWalkEvent extends BaseEvent<StartWalkEvent.StartWalkResult> {
     private String name = "";
     private int steps;
+    private Actor1 player;
 
-    public StartWalkEvent(String name, int steps) {
+    public StartWalkEvent(Actor1 player, String name, int steps) {
         super(name);
+        this.player = player;
         this.steps = steps;
     }
 
@@ -25,17 +28,17 @@ public class StartWalkEvent extends BaseEvent <StartWalkEvent.StartWalkResult>{
         WayPoint p = null;
         while (steps > 0) {
             p = doWalk().waitReport();
-            waitFor(new PassEvent("Pass", p));
+            waitFor(new PassEvent(player, "Pass", p));
             steps--;
         }
-        waitFor(new StopWalkEvent(p));
+        waitFor(new StopWalkEvent(player,p));
         System.out.println(getName() + "结束");
         complete(getName());
     }
 
-    private ResultReporter<WayPoint> doWalk() {
-        ResultReporter<WayPoint> reporter = new ResultReporter<>();
-        MainGame.Instance.startWalk(reporter);
+    private ResultWaiter<WayPoint> doWalk() {
+        ResultWaiter<WayPoint> reporter = new ResultWaiter<>();
+        MainGame.Instance.startWalk(player, reporter);
         return reporter;
     }
 

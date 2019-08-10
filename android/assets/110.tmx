@@ -8,7 +8,7 @@
  </layer>
  <layer name="landbase" width="10" height="10">
   <data encoding="base64">
-   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4AAAAAAAAAAAAAAAAAAABDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
   </data>
  </layer>
  <layer name="land" width="10" height="10">
@@ -16,7 +16,7 @@
    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADYAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
   </data>
  </layer>
- <objectgroup name="waypoint">
+ <objectgroup name="waypoint" visible="0">
   <object id="1" x="0" y="216" width="32" height="24">
    <properties>
     <property name="land_col" type="int" value="0"/>
@@ -31,8 +31,8 @@
   </object>
   <object id="3" x="64" y="216" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="1"/>
+    <property name="land_row" type="int" value="1"/>
    </properties>
   </object>
   <object id="4" x="96" y="216" width="32" height="24">
@@ -229,14 +229,14 @@
   </object>
   <object id="36" x="0" y="168" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="1"/>
+    <property name="land_row" type="int" value="1"/>
    </properties>
   </object>
   <object id="37" x="0" y="192" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="1"/>
+    <property name="land_row" type="int" value="1"/>
    </properties>
   </object>
   <object id="38" x="32" y="96" width="32" height="24">
@@ -330,10 +330,26 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="landpoint" visible="0" locked="1">
-  <object id="53" x="32" y="192" width="32" height="24"/>
-  <object id="54" x="32" y="72" width="32" height="24"/>
-  <object id="55" x="160" y="72" width="32" height="24"/>
-  <object id="56" x="224" y="192" width="32" height="24"/>
+ <objectgroup name="landpoint">
+  <object id="53" x="32" y="192" width="32" height="24">
+   <properties>
+    <property name="type" value="small"/>
+   </properties>
+  </object>
+  <object id="54" x="32" y="72" width="32" height="24">
+   <properties>
+    <property name="type" value="small"/>
+   </properties>
+  </object>
+  <object id="55" x="160" y="72" width="32" height="24">
+   <properties>
+    <property name="type" value="small"/>
+   </properties>
+  </object>
+  <object id="56" x="224" y="192" width="32" height="24">
+   <properties>
+    <property name="type" value="small"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

@@ -1,13 +1,15 @@
 package com.mygdx.game.events;
 
+import com.mygdx.game.Actor1;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.entity.WayPoint;
 
 public class PassEvent extends BaseEvent<PassEvent.PassResult> {
     private WayPoint point;
-
-    public PassEvent(String name, WayPoint point) {
+private Actor1 player;
+    public PassEvent(Actor1 player,String name, WayPoint point) {
         super(name);
+        this.player = player;
         this.point = point;
     }
 
@@ -16,9 +18,9 @@ public class PassEvent extends BaseEvent<PassEvent.PassResult> {
         checkPass().waitReport();
     }
 
-    public ResultReporter<Object> checkPass() {
-        ResultReporter<Object> reporter = new ResultReporter<>();
-        MainGame.Instance.passWayPoint(point, reporter);
+    public ResultWaiter<Object> checkPass() {
+        ResultWaiter<Object> reporter = new ResultWaiter<>();
+        MainGame.Instance.passWayPoint(player,point, reporter);
         return reporter;
     }
 

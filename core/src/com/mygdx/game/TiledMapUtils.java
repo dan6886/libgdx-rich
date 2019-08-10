@@ -2,9 +2,12 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.entity.LandPoint;
 import com.mygdx.game.entity.WayPoint;
 
 import java.util.ArrayList;
@@ -105,4 +108,10 @@ public class TiledMapUtils {
 
         return dest;
     }
+
+    public static void markTileOwner(TiledMapTileLayer layer, LandPoint point, TiledMapTileSets sets, int id) {
+        TiledMapTile tile = sets.getTile(id);
+        layer.getCell(point.getRow(), point.getCol()).setTile(tile);
+    }
+
 }

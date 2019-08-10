@@ -1,22 +1,24 @@
 package com.mygdx.game.events;
 
+import com.mygdx.game.Actor1;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.entity.WayPoint;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
-import java.util.SplittableRandom;
 import java.util.concurrent.CompletableFuture;
 
 public class StopWalkEvent extends BaseEvent<StopWalkEvent.StopWalkResult> {
     private String name = "";
     private WayPoint point;
+    private Actor1 player;
 
-    public StopWalkEvent(String name, WayPoint point) {
-        this(point);
+    public StopWalkEvent(Actor1 player, String name, WayPoint point) {
+        this(player, point);
+        this.player = player;
     }
 
-    public StopWalkEvent(WayPoint point) {
+    public StopWalkEvent(Actor1 player, WayPoint point) {
         super("StopWalkEvent");
+        this.player = player;
         this.point = point;
     }
 
@@ -35,7 +37,7 @@ public class StopWalkEvent extends BaseEvent<StopWalkEvent.StopWalkResult> {
 
         WayPoint p = stopAtWayPoint(point).waitReport();
 
-        waitFor(new HandleLandEvent("handle land", p.getLandPoint()));
+        waitFor(new HandleLandEvent(player, "handle land", p.getLandPoint()));
 
         complete(getName());
     }
@@ -46,10 +48,10 @@ public class StopWalkEvent extends BaseEvent<StopWalkEvent.StopWalkResult> {
      * @param point
      * @return
      */
-    public ResultReporter<WayPoint> stopAtWayPoint(WayPoint point) {
-        ResultReporter<WayPoint> reporter = new ResultReporter<>();
+    public ResultWaiter<WayPoint> stopAtWayPoint(WayPoint point) {
+        ResultWaiter<WayPoint> reporter = new ResultWaiter<>();
         // 这里调用出去,这个方法最好是在其他线程里面跑
-        MainGame.Instance.stopAt(point, reporter);
+        MainGame.Instance.stopAt(player, point, reporter);
         return reporter;
     }
 

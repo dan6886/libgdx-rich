@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.mygdx.game.entity.LandPoint;
 import com.mygdx.game.entity.WayPoint;
 import com.mygdx.game.events.BaseEvent;
 
@@ -14,9 +15,16 @@ public class Actor1 extends Actor {
     private TextureRegion region;
     private WayPoint current;
     private WayPoint pre;
+    private String name = "";
 
-    public Actor1(Texture texture) {
+    public Actor1(String name, Texture texture) {
         region = new TextureRegion(texture, 0, 0, 20, 20);
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     public void start() {
@@ -39,7 +47,7 @@ public class Actor1 extends Actor {
         this.pre = pre;
     }
 
-    public void startWalk( BaseEvent.ResultReporter<WayPoint> reporter) {
+    public void startWalk(BaseEvent.ResultWaiter<WayPoint> reporter) {
         WayPoint nextWayPoint = MainGame.Instance.getNextWayPoint(current, pre);
         walkTo(nextWayPoint, new Runnable() {
             @Override
@@ -66,5 +74,18 @@ public class Actor1 extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
+    }
+
+    public void buy(LandPoint point) {
+        point.setOwnerName(getName());
+        System.out.println("购买了土地" + point.toString());
+    }
+
+    public void build(LandPoint point) {
+
+    }
+
+    public void pay(LandPoint point) {
+
     }
 }
