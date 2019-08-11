@@ -23,11 +23,10 @@ public class ConfirmWindow extends Window {
         super(title, skin);
     }
 
-    public ConfirmWindow(String title, Skin skin, PublishSubject<ConfirmResult> subject, int type) {
+    public ConfirmWindow(String title, Skin skin, PublishSubject<ConfirmResult> subject) {
         super(title, skin);
         this.skin = skin;
         this.subject = subject;
-        this.type = type;
         init();
     }
 

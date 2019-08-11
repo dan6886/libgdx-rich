@@ -29,6 +29,14 @@ public class LandPoint extends Point {
         return "".equals(getOwnerName());
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void levelUp() {
         if (level < 5) {
             level++;
@@ -39,6 +47,14 @@ public class LandPoint extends Point {
         if (level > 0) {
             level--;
         }
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public boolean isCanLevelUp() {
+        return getLevel() < 5;
     }
 
     public String getBuildingTiledName() {

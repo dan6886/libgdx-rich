@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.mygdx.game.entity.LandPoint;
 import com.mygdx.game.entity.WayPoint;
 import com.mygdx.game.events.BaseEvent;
+import com.mygdx.game.handler.BaseHandler;
+import com.mygdx.game.handler.ResultReporter;
 
 public class Actor1 extends Actor {
     private TextureRegion region;
@@ -47,7 +49,7 @@ public class Actor1 extends Actor {
         this.pre = pre;
     }
 
-    public void startWalk(BaseEvent.ResultWaiter<WayPoint> reporter) {
+    public void startWalk(ResultReporter<WayPoint> reporter) {
         WayPoint nextWayPoint = MainGame.Instance.getNextWayPoint(current, pre);
         walkTo(nextWayPoint, new Runnable() {
             @Override

@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.entity.*;
 import com.mygdx.game.events.BaseEvent;
 import com.mygdx.game.events.StartWalkEvent;
+import com.mygdx.game.handler.*;
 import com.mygdx.game.ui.ConfirmWindow;
 import com.mygdx.game.ui.MessageWindow;
 import io.reactivex.Observable;
@@ -67,8 +68,10 @@ public class MainGame extends ApplicationAdapter {
 
     private Skin skin;
     private TiledMapTileLayer landbase;
+    private TiledMapTileLayer landBuilding;
     private TileSetIdManager tileSetIdManager;
     TiledMapTileSets tileSets;
+    HandlerChain handlerChain = new HandlerChain();
 
     @Override
     public void create() {
@@ -102,7 +105,7 @@ public class MainGame extends ApplicationAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("消费了点击");
-                new StartWalkEvent(actor1, "startwalk", 2).happen();
+                startWalk(2);
             }
         });
         button.setX(400);
@@ -111,10 +114,30 @@ public class MainGame extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
     }
 
+    private void startWalk(int count) {
+        handlerChain.reset();
+        BaseHandler.HandlerEntity entity = new BaseHandler.HandlerEntity();
+        entity.setPlayer(actor1);
+        entity.setMoveCount(count);
+        handlerChain.start(entity);
+    }
+
     private void init() {
+        // 开始行走
+        handlerChain.addHandler(new StartWalkHandler());
+        // 路过
+        handlerChain.addHandler(new PassHandler());
+        // 停下 猜到路点
+        handlerChain.addHandler(new StopWayHandler());
+        //
+        handlerChain.addHandler(new BuyLandHandler());
+        handlerChain.addHandler(new BuildLandHandler());
+        handlerChain.addHandler(new PayLandHandler());
+
 
         TiledMapTileLayer mapLayer = (TiledMapTileLayer) map.getLayers().get("ground");
         landbase = (TiledMapTileLayer) map.getLayers().get("landbase");
+        landBuilding = (TiledMapTileLayer) map.getLayers().get("land");
 
         tileSets = map.getTileSets();
         TiledMapTile tile = tileSets.getTile(61);
@@ -142,7 +165,8 @@ public class MainGame extends ApplicationAdapter {
             Integer land_row = object.getProperties().get("land_row", Integer.class);
             Integer land_col = object.getProperties().get("land_col", Integer.class);
 
-            LandPoint related = landPointArray[land_row][land_col];
+//            LandPoint related = landPointArray[land_row][land_col];
+            LandPoint related = landPointArray[1][1];
             if (null == related) {
                 related = LandPoint.NOTHINIG;
             }
@@ -258,7 +282,7 @@ public class MainGame extends ApplicationAdapter {
         }
     }
 
-    public void startWalk(Actor1 player, BaseEvent.ResultWaiter<WayPoint> reporter) {
+    public void startWalk(Actor1 player, ResultReporter<WayPoint> reporter) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
@@ -313,7 +337,7 @@ public class MainGame extends ApplicationAdapter {
                 if (point.isBlank()) {
                     return showConfirmWindow(ConfirmResult.EVENT_BUY_LAND, "will want to buy this land?");
                 } else if (point.getOwnerName().equals(player.getName())) {
-                    return showTipsWindow(ConfirmResult.EVENT_PAY_LAND, "will you want pay for this land");
+                    return showConfirmWindow(ConfirmResult.EVENT_BUILD_LAND, "will you want to build up this land");
                 } else {
                     return showConfirmWindow(ConfirmResult.EVENT_BUILD_LAND, "will you want to build up this land");
                 }
@@ -329,7 +353,7 @@ public class MainGame extends ApplicationAdapter {
                         if (confirmResult.isOk()) {
                             player.buy(point);
                             BaseEvent.ResultWaiter<BuyResult> waiter1 = new BaseEvent.ResultWaiter<>();
-                            buyLand(player, waiter1);// 这里提交动画到主线程执行，并且等待结果
+//                            buyLand(player, waiter1);// 这里提交动画到主线程执行，并且等待结果
                             result = waiter1.waitReport();
                             return buySuccess(result);
                         } else {
@@ -427,7 +451,7 @@ public class MainGame extends ApplicationAdapter {
             @Override
             public void run() {
                 System.out.println("主循环" + Thread.currentThread().getName());
-                ConfirmWindow tips = new ConfirmWindow("tips" + type, skin, subject, type);
+                ConfirmWindow tips = new ConfirmWindow("tips" + type, skin, subject);
                 tips.setText(text);
                 stage.addActor(tips);
             }
@@ -445,16 +469,51 @@ public class MainGame extends ApplicationAdapter {
         return subject;
     }
 
-    public void buyLand(Actor1 player, BaseEvent.ResultWaiter<BuyResult> waiter) {
+    public void showConfirmWindow(String text, ResultReporter<ConfirmResult> reporter) {
+        PublishSubject<ConfirmResult> subject = PublishSubject.create();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("主循环" + Thread.currentThread().getName());
+                ConfirmWindow tips = new ConfirmWindow("tips", skin, subject);
+                tips.setText(text);
+                stage.addActor(tips);
+            }
+        });
+        //开启线程 showWindow
+
+        subject.observeOn(Schedulers.newThread()).subscribe(new Consumer<ConfirmResult>() {
+            @Override
+            public void accept(ConfirmResult confirmResult) throws Exception {
+                reporter.report(confirmResult);
+            }
+        });
+
+    }
+
+    public void buyLand(Actor1 player, ResultReporter<Object> waiter) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
                 int id = tileSetIdManager.getLandBaseId(player.getName(), player.getCurrent().getLandPoint().getType());
                 TiledMapUtils.markTileOwner(landbase, player.getCurrent().getLandPoint(), tileSets, id);
-                waiter.report(new BuyResult(BaseResult.EVENT_BUY_LAND));
+                waiter.report(new Object());
             }
         });
         //开启线程 showWindow
+    }
+
+    public void buildUp(Actor1 actor, ResultReporter<Object> reporter) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                LandPoint landPoint = actor.getCurrent().getLandPoint();
+                landPoint.levelUp();
+                int houseTileId = tileSetIdManager.getHouseTileId(landPoint.getBuildingTiledName());
+                TiledMapUtils.markTileOwner(landBuilding, landPoint, tileSets, houseTileId);
+                reporter.report(new Object());
+            }
+        });
     }
 
     public ObservableSource<PayResult> payLand(BaseEvent.ResultWaiter<PayResult> waiter) {
@@ -478,9 +537,6 @@ public class MainGame extends ApplicationAdapter {
 
     }
 
-    public ObservableSource<ConfirmResult> showPayMoney() {
-
-    }
 
     private void showTipsWindow(String tips, Runnable runnable) {
         Gdx.app.postRunnable(new Runnable() {
