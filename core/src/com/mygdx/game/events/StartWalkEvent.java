@@ -38,7 +38,7 @@ public class StartWalkEvent extends BaseEvent<StartWalkEvent.StartWalkResult> {
 
     private ResultWaiter<WayPoint> doWalk() {
         ResultWaiter<WayPoint> reporter = new ResultWaiter<>();
-//        MainGame.Instance.startWalk(player, reporter);
+//        MainGame.Instance.prepareWalk(player, reporter);
         return reporter;
     }
 

@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,11 +11,8 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -25,7 +23,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.entity.*;
 import com.mygdx.game.events.BaseEvent;
-import com.mygdx.game.events.StartWalkEvent;
 import com.mygdx.game.handler.*;
 import com.mygdx.game.ui.ConfirmWindow;
 import com.mygdx.game.ui.MessageWindow;
@@ -41,8 +38,6 @@ import io.reactivex.subjects.PublishSubject;
 
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
@@ -72,6 +67,7 @@ public class MainGame extends ApplicationAdapter {
     private TileSetIdManager tileSetIdManager;
     TiledMapTileSets tileSets;
     HandlerChain handlerChain = new HandlerChain();
+    private TextButton button;
 
     @Override
     public void create() {
@@ -100,29 +96,33 @@ public class MainGame extends ApplicationAdapter {
         init();
         actor1.setCurrent(wayPointArray[0][0]);
         actor1.setPre(wayPointArray[0][0]);
-        TextButton button = new TextButton("start", skin);
-        button.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                System.out.println("消费了点击");
-                startWalk(2);
-            }
-        });
+        button = new TextButton("start", skin);
         button.setX(400);
         button.setY(100);
         stage.addActor(button);
-        Gdx.input.setInputProcessor(stage);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
+        prepareWalk();
     }
 
-    private void startWalk(int count) {
+    private void prepareWalk() {
         handlerChain.reset();
         BaseHandler.HandlerEntity entity = new BaseHandler.HandlerEntity();
         entity.setPlayer(actor1);
-        entity.setMoveCount(count);
-        handlerChain.start(entity);
+        handlerChain.start(entity, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("完成回调:" + actor1.toString());
+                prepareWalk();
+            }
+        });
+        System.out.println("执行完毕了吗?");
     }
 
     private void init() {
+        // 开始前检测
+        handlerChain.addHandler(new CheckStartWalkHandler());
         // 开始行走
         handlerChain.addHandler(new StartWalkHandler());
         // 路过
@@ -165,8 +165,10 @@ public class MainGame extends ApplicationAdapter {
             Integer land_row = object.getProperties().get("land_row", Integer.class);
             Integer land_col = object.getProperties().get("land_col", Integer.class);
 
-//            LandPoint related = landPointArray[land_row][land_col];
+//          LandPoint related = landPointArray[land_row][land_col];
+            //测试代码，需删除
             LandPoint related = landPointArray[1][1];
+            related.setOwner(new Actor1("dd", img));
             if (null == related) {
                 related = LandPoint.NOTHINIG;
             }
@@ -199,74 +201,6 @@ public class MainGame extends ApplicationAdapter {
         img.dispose();
     }
 
-    public void subject(BaseEvent.ResultWaiter<Object> reporter) {
-        System.out.println("subject");
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("subject");
-                showWindow(reporter);
-            }
-        });
-    }
-
-    private void showWindow(BaseEvent.ResultWaiter<Object> reporter) {
-        Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-        Window window = new Window("WindowTest", skin);
-        // 默认文字是在左边显示，需要手动设置居中
-        window.getTitleLabel().setAlignment(Align.center);
-        // 默认window的位置是在左下角，需重新设置
-        window.setX(Gdx.graphics.getWidth() / 2 - window.getWidth() / 2);
-        window.setY(Gdx.graphics.getHeight() / 2 - window.getHeight() / 2);
-        // 拖动TitleLabel，window会移动
-        window.setMovable(true);
-
-        Label label = new Label(getTips(), skin);
-        label.setX(0);
-        label.setY(30);
-        TextButton tbOk = new TextButton("OK", skin);
-        TextButton tbCancel = new TextButton("CANCEL", skin);
-        tbOk.setSize(tbCancel.getPrefWidth(), tbCancel.getPrefHeight());
-        tbCancel.addListener(new ClickListener() {
-
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("TAG", "dialog cancel button is clicked");
-            }
-
-        });
-        tbOk.addListener(new ClickListener() {
-
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.log("TAG", "dialog ok button is clicked");
-                reporter.report(new Object());
-            }
-
-        });
-        tbOk.setX(window.getPrefWidth() / 2 - tbOk.getWidth() / 2 - 10);
-        tbOk.setY(10);
-        tbCancel.setX(window.getWidth() / 2 + 10);
-        tbCancel.setY(10);
-        // 这个地方用addActor方法，不能使用add方法，后面将讲解Table的时候会涉及到
-        window.addActor(label);
-        window.addActor(tbOk);
-        window.addActor(tbCancel);
-        Gdx.app.log("TAG", "window preWidth=" + window.getPrefWidth() + "window width=" + window.getWidth());
-//      window.pack();
-
-//        window.addAction(Actions.forever(Actions.rotateBy(360, 5)));
-
-        stage.addActor(window);
-    }
-
-    private String getTips() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Hit:").append("\n");
-
-        return sb.toString();
-    }
-
     public WayPoint getNextWayPoint(WayPoint currentWayPoint, WayPoint preWayPoint) {
         List<WayPoint> nextWayPoint =
                 TiledMapUtils.findNextWayPoint(wayPointArray, currentWayPoint, preWayPoint);
@@ -282,15 +216,16 @@ public class MainGame extends ApplicationAdapter {
         }
     }
 
-    public void startWalk(Actor1 player, ResultReporter<WayPoint> reporter) {
+    public void doWalk(Actor1 player, ResultReporter<WayPoint> reporter) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                actor1.startWalk(reporter);
+                player.startWalk(reporter);
             }
         });
     }
 
+    @Deprecated
     public void passWayPoint(Actor1 player, WayPoint point, BaseEvent.ResultWaiter<Object> reporter) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
@@ -301,6 +236,7 @@ public class MainGame extends ApplicationAdapter {
         });
     }
 
+    @Deprecated
     public void stopAt(Actor1 player, WayPoint point, BaseEvent.ResultWaiter<WayPoint> reporter) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
@@ -319,6 +255,7 @@ public class MainGame extends ApplicationAdapter {
      * @param point
      * @param reporter
      */
+    @Deprecated
     public void consumeOrInvest(Actor1 player, LandPoint point, BaseEvent.ResultWaiter<LandPoint> reporter) {
 
         Observable.just("开始奇怪的代码")
@@ -406,6 +343,7 @@ public class MainGame extends ApplicationAdapter {
                 });
     }
 
+    @Deprecated
     private ObservableSource<BaseResult> buySuccess(BaseResult result) {
         return Observable.just(result).map(new Function<BaseResult, BaseResult>() {
             @Override
@@ -441,10 +379,12 @@ public class MainGame extends ApplicationAdapter {
         });
     }
 
+    @Deprecated
     private ObservableSource<BaseResult> buyCancel(BaseResult result) {
         return Observable.just(result);
     }
 
+    @Deprecated
     public ObservableSource<ConfirmResult> showConfirmWindow(int type, String text) {
         PublishSubject<ConfirmResult> subject = PublishSubject.create();
         Gdx.app.postRunnable(new Runnable() {
@@ -461,12 +401,38 @@ public class MainGame extends ApplicationAdapter {
         return subject.observeOn(Schedulers.newThread());
     }
 
+    @Deprecated
     public ObservableSource<BuildResult> buildLand(BaseEvent.ResultWaiter<BuildResult> waiter) {
         PublishSubject<BuildResult> subject = PublishSubject.create();
 
         //开启线程 showWindow
 
         return subject;
+    }
+
+    @Deprecated
+    public ObservableSource<PayResult> payLand(BaseEvent.ResultWaiter<PayResult> waiter) {
+        PublishSubject<PayResult> subject = PublishSubject.create();
+
+        //开启线程 showWindow
+
+        return subject;
+    }
+
+    @Deprecated
+    public void playerEarnMoney(BaseEvent.ResultWaiter<Object> waiter) {
+        //开启线程玩家得意
+    }
+
+    @Deprecated
+    public void playerPrideBuilding(BaseEvent.ResultWaiter<Object> waiter) {
+        //开启线程玩家得意
+    }
+
+    @Deprecated
+    public void playerPrideBuy(BaseEvent.ResultWaiter<Object> waiter) {
+        //开启线程玩家得意
+
     }
 
     public void showConfirmWindow(String text, ResultReporter<ConfirmResult> reporter) {
@@ -503,12 +469,11 @@ public class MainGame extends ApplicationAdapter {
         //开启线程 showWindow
     }
 
-    public void buildUp(Actor1 actor, ResultReporter<Object> reporter) {
+    public void buildUIUp(Actor1 actor, ResultReporter<Object> reporter) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
                 LandPoint landPoint = actor.getCurrent().getLandPoint();
-                landPoint.levelUp();
                 int houseTileId = tileSetIdManager.getHouseTileId(landPoint.getBuildingTiledName());
                 TiledMapUtils.markTileOwner(landBuilding, landPoint, tileSets, houseTileId);
                 reporter.report(new Object());
@@ -516,39 +481,38 @@ public class MainGame extends ApplicationAdapter {
         });
     }
 
-    public ObservableSource<PayResult> payLand(BaseEvent.ResultWaiter<PayResult> waiter) {
-        PublishSubject<PayResult> subject = PublishSubject.create();
 
-        //开启线程 showWindow
-
-        return subject;
-    }
-
-    public void playerEarnMoney(BaseEvent.ResultWaiter<Object> waiter) {
-        //开启线程玩家得意
-    }
-
-    public void playerPrideBuilding(BaseEvent.ResultWaiter<Object> waiter) {
-        //开启线程玩家得意
-    }
-
-    public void playerPrideBuy(BaseEvent.ResultWaiter<Object> waiter) {
-        //开启线程玩家得意
-
-    }
-
-
-    private void showTipsWindow(String tips, Runnable runnable) {
+    public void showTipsWindow(String tips, ResultReporter<Object> reporter) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
                 MessageWindow messageWindow = new MessageWindow("tips", skin);
+                messageWindow.setMessage(tips);
                 stage.addActor(messageWindow);
                 messageWindow.startDismiss(new Runnable() {
                     @Override
                     public void run() {
                         messageWindow.remove();
-                        runnable.run();
+                        reporter.report(new Object());
+                    }
+                });
+            }
+        });
+    }
+
+    public void showStartButton(ResultReporter<Integer> reporter) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                button.setVisible(true);
+                //这里一定得记得清除上次的监听，否则会引起线程阻塞，上一个reporter 没有释放
+                button.clearListeners();
+                button.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        System.out.println("消费了点击" + reporter.toString());
+                        button.setVisible(false);
+                        reporter.report(3);
                     }
                 });
             }

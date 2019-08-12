@@ -1,6 +1,8 @@
 package com.mygdx.game.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -14,10 +16,11 @@ import com.badlogic.gdx.utils.Align;
 import com.mygdx.game.entity.ConfirmResult;
 import io.reactivex.subjects.PublishSubject;
 
-public class MessageWindow extends Window {
+public class MessageWindow extends Window implements InputProcessor {
     private Skin skin;
     private String message = "";
     private Label label;
+    DelayAction delay;
 
     public String getMessage() {
         return message;
@@ -30,13 +33,22 @@ public class MessageWindow extends Window {
 
 
     public void startDismiss(Runnable run) {
-        DelayAction delay = Actions.delay(2, Actions.run(run));
+        delay = Actions.delay(3, Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                InputMultiplexer multiplexer = (InputMultiplexer) Gdx.input.getInputProcessor();
+                multiplexer.removeProcessor(MessageWindow.this);
+                run.run();
+            }
+        }));
         addAction(delay);
     }
 
     public MessageWindow(String title, Skin skin) {
         super(title, skin);
         this.skin = skin;
+        InputMultiplexer inputProcessor = (InputMultiplexer) Gdx.input.getInputProcessor();
+        inputProcessor.addProcessor(0, this);
         init();
     }
 
@@ -53,8 +65,58 @@ public class MessageWindow extends Window {
         label = new Label("i am rich", skin);
         label.setX(5);
         label.setY(0);
-        label.setColor(Color.RED);
+        label.setColor(Color.GREEN);
         // 这个地方用addActor方法，不能使用add方法，后面将讲解Table的时候会涉及到
         addActor(label);
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    /**
+     * 对话框出现的时候点击屏幕就可以取消自己
+     * @param screenX
+     * @param screenY
+     * @param pointer
+     * @param button
+     * @return
+     */
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        delay.finish();
+        System.out.println("点击了事件");
+        return true;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }

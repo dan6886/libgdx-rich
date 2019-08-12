@@ -15,12 +15,13 @@ public class HandlerChain {
         return this;
     }
 
-    public void start(BaseHandler.HandlerEntity entity) {
+    public void start(BaseHandler.HandlerEntity entity, Runnable run) {
         service.submit(new Runnable() {
             @Override
             public void run() {
                 process(entity);
                 System.out.println("任务链执行完毕");
+                run.run();
             }
         });
     }

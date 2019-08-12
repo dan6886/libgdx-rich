@@ -14,13 +14,14 @@ public class BuildLandHandler extends BaseHandler {
         if (landPoint.isCanLevelUp()) {
             ConfirmResult confirmResult = buildLandConfirm();
             if (confirmResult.isOk()) {
-                int level = landPoint.getLevel();
                 String type = landPoint.getType();
                 if ("small".equals(type)) {
                     landPoint.setName("house");
                     // 小地
                     // 可以升级
-                    Object o = buildUp(s.getPlayer());
+                    s.getPlayer().build(s.getPlayer().getCurrent().getLandPoint());
+                    Object o = buildUIUp(s.getPlayer());
+                    showTipsWindow("welcome to my land");
                 } else if ("big".equals(type)) {
                     System.out.println("大地");
                 }
@@ -33,16 +34,22 @@ public class BuildLandHandler extends BaseHandler {
         return chain.process(s);
     }
 
-    ResultReporter<ConfirmResult> reporter = new ResultReporter<>();
 
     public ConfirmResult buildLandConfirm() {
+        ResultReporter<ConfirmResult> reporter = new ResultReporter<>();
         MainGame.Instance.showConfirmWindow("will you want to build up this land?", reporter);
         return reporter.waitReport();
     }
 
-    private Object buildUp(Actor1 actor1) {
+    private Object buildUIUp(Actor1 actor1) {
         ResultReporter<Object> reporter = new ResultReporter<>();
-        MainGame.Instance.buildUp(actor1, reporter);
+        MainGame.Instance.buildUIUp(actor1, reporter);
         return reporter.waitReport();
+    }
+
+    private void showTipsWindow(String text) {
+        ResultReporter<Object> reporter = new ResultReporter<>();
+        MainGame.Instance.showTipsWindow(text, reporter);
+        reporter.waitReport();
     }
 }

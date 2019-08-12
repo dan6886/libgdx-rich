@@ -1,7 +1,6 @@
 package com.mygdx.game.handler;
 
 import com.mygdx.game.Actor1;
-import org.omg.CORBA.Any;
 
 public abstract class BaseHandler implements IHandler {
     public static String START_WALK_HANDLER = "StartWalkHandler";
@@ -37,8 +36,17 @@ public abstract class BaseHandler implements IHandler {
 
     public static class HandlerEntity {
         private int condition = 0;
+        /**
+         * 可以指定责任链对象类名，这样可以直接跳到对应的点去执行
+         */
         private String target = "any";
+        /**
+         * 玩家
+         */
         private Actor1 player;
+        /**
+         * 移动的步数
+         */
         private int moveCount = 10;
 
         public String getTarget() {

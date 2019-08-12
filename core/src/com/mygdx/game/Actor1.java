@@ -9,8 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.mygdx.game.entity.LandPoint;
 import com.mygdx.game.entity.WayPoint;
-import com.mygdx.game.events.BaseEvent;
-import com.mygdx.game.handler.BaseHandler;
 import com.mygdx.game.handler.ResultReporter;
 
 public class Actor1 extends Actor {
@@ -18,6 +16,8 @@ public class Actor1 extends Actor {
     private WayPoint current;
     private WayPoint pre;
     private String name = "";
+    private int state = 1;
+    private int cash = 10000;
 
     public Actor1(String name, Texture texture) {
         region = new TextureRegion(texture, 0, 0, 20, 20);
@@ -47,6 +47,14 @@ public class Actor1 extends Actor {
 
     public void setPre(WayPoint pre) {
         this.pre = pre;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public void startWalk(ResultReporter<WayPoint> reporter) {
@@ -79,15 +87,38 @@ public class Actor1 extends Actor {
     }
 
     public void buy(LandPoint point) {
-        point.setOwnerName(getName());
+        point.setOwner(this);
         System.out.println("购买了土地" + point.toString());
     }
 
     public void build(LandPoint point) {
-
+        payMoney(point.getBuildPrice());
+        point.buildUp();
+        System.out.println("支付升级费:" + point.toString());
     }
 
     public void pay(LandPoint point) {
+        Actor1 owner = point.getOwner();
+        int price = point.getPrice();
+        payMoney(price);
+        owner.addMoney(price);
+        System.out.println("支付过路费:" + point.toString());
+    }
 
+    public void addMoney(int money) {
+        cash += money;
+    }
+
+    public void payMoney(int money) {
+        cash -= money;
+    }
+
+    @Override
+    public String toString() {
+        return "Actor1{" +
+                "name='" + name + '\'' +
+                ", state=" + state +
+                ", cash=" + cash +
+                '}';
     }
 }
