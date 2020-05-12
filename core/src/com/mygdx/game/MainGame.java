@@ -26,6 +26,7 @@ import com.mygdx.game.events.BaseEvent;
 import com.mygdx.game.handler.*;
 import com.mygdx.game.ui.ConfirmWindow;
 import com.mygdx.game.ui.MessageWindow;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
@@ -127,12 +128,16 @@ public class MainGame extends ApplicationAdapter {
         handlerChain.addHandler(new StartWalkHandler());
         // 路过
         handlerChain.addHandler(new PassHandler());
+        // 各路神仙施展魔法,或者触发神灵得到效果
+        handlerChain.addHandler(new GodMagicHandler());
         // 停下 猜到路点
         handlerChain.addHandler(new StopWayHandler());
         //
         handlerChain.addHandler(new BuyLandHandler());
         handlerChain.addHandler(new BuildLandHandler());
         handlerChain.addHandler(new PayLandHandler());
+
+        handlerChain.addHandler(new FinishRoundHandler());
 
 
         TiledMapTileLayer mapLayer = (TiledMapTileLayer) map.getLayers().get("ground");
@@ -448,12 +453,13 @@ public class MainGame extends ApplicationAdapter {
         });
         //开启线程 showWindow
 
-        subject.observeOn(Schedulers.newThread()).subscribe(new Consumer<ConfirmResult>() {
-            @Override
-            public void accept(ConfirmResult confirmResult) throws Exception {
-                reporter.report(confirmResult);
-            }
-        });
+        subject.observeOn(Schedulers.newThread())
+                .subscribe(new Consumer<ConfirmResult>() {
+                    @Override
+                    public void accept(ConfirmResult confirmResult) throws Exception {
+                        reporter.report(confirmResult);
+                    }
+                });
 
     }
 

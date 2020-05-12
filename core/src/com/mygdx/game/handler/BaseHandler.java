@@ -39,7 +39,7 @@ public abstract class BaseHandler implements IHandler {
         /**
          * 可以指定责任链对象类名，这样可以直接跳到对应的点去执行
          */
-        private String target = "any";
+        private ParcelData target = ParcelData.Builder.DEFAULT;
         /**
          * 玩家
          */
@@ -49,16 +49,12 @@ public abstract class BaseHandler implements IHandler {
          */
         private int moveCount = 10;
 
-        public String getTarget() {
+        public ParcelData getParcelData() {
             return target;
         }
 
-        public void setTarget(String target) {
+        public void setParcelData(ParcelData target) {
             this.target = target;
-        }
-
-        public void setAny() {
-            this.setTarget("Any");
         }
 
         public int getCondition() {
