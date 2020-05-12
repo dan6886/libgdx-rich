@@ -5,7 +5,7 @@ public class StartWalkHandler extends BaseHandler {
     @Override
     public BaseHandler.HandlerEntity doHandle(BaseHandler.HandlerEntity s, HandlerChain chain) {
         if (s.getPlayer().equals("dan")) {
-//            s.setTarget("StopWayHandler");
+//            s.setParcelData("StopWayHandler");
         }
 
         System.out.println("开始了");

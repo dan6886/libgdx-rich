@@ -1,6 +1,5 @@
 package com.mygdx.game.handler;
 
-import com.mygdx.game.MainGame;
 import com.mygdx.game.entity.LandPoint;
 import com.mygdx.game.entity.WayPoint;
 import com.mygdx.game.events.BaseEvent;
@@ -17,15 +16,26 @@ public class StopWayHandler extends BaseHandler {
         LandPoint landPoint = current.getLandPoint();
         if (landPoint.isNothing()) {
             //该路点对应不是土地模块
-            s.setTarget(STOP_WAY_HANDLER);
+            s.setParcelData(new ParcelData.Builder()
+                    .setPrevHandlerName(this.getClass().getSimpleName())
+                    .build());
         } else {
             if (landPoint.isBlank()) {
-                s.setTarget(BUY_LAND_HANDLER);
+                s.setParcelData(new ParcelData.Builder()
+                        .setPrevHandlerName(this.getClass().getSimpleName())
+                        .setTargetHandlerName(BuyLandHandler.class.getSimpleName())
+                        .build());
             } else {
                 if (s.getPlayer().getName().equals(landPoint.getOwnerName())) {
-                    s.setTarget(BUILD_LAND_HANDLER);
+                    s.setParcelData(new ParcelData.Builder()
+                            .setPrevHandlerName(this.getClass().getSimpleName())
+                            .setTargetHandlerName(BuildLandHandler.class.getSimpleName())
+                            .build());
                 } else {
-                    s.setTarget(PAY_LAND_HANDLER);
+                    s.setParcelData(new ParcelData.Builder()
+                            .setPrevHandlerName(this.getClass().getSimpleName())
+                            .setTargetHandlerName(PayLandHandler.class.getSimpleName())
+                            .build());
                 }
             }
         }
