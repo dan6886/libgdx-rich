@@ -1,5 +1,8 @@
 package com.mygdx.game.handler;
 
+import com.mygdx.game.MainGame;
+import com.mygdx.game.entity.WayPoint;
+
 public class PassHandler extends BaseHandler {
 
     @Override
@@ -15,9 +18,10 @@ public class PassHandler extends BaseHandler {
         return chain.process(s);
     }
 
-    private String doTask2(HandlerEntity entity) {
-        ResultReporter<String> reporter = new ResultReporter<>();
-        ReportUtils.deley(1, reporter, "walk");
+    private WayPoint doTask2(HandlerEntity entity) {
+        ResultReporter<WayPoint> reporter = new ResultReporter<>();
+//        ReportUtils.deley(1, reporter, "walk");
+        MainGame.Instance.doWalk(entity.getPlayer(), reporter);
         return reporter.waitReport();
     }
 

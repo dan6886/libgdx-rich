@@ -11,7 +11,7 @@ public class LandSurpriseAction extends BaseAction<BaseHandler.HandlerEntity> {
     @Override
     public BaseHandler.HandlerEntity doAction(BaseHandler.HandlerEntity entity) {
         String s = test1();
-
+        System.out.println("god:" + s);
         ParcelData parcelData = entity.getParcelData();
         entity.setParcelData(parcelData.toBuilder().add("god", s).build());
         if ("td".equals(s)) {
