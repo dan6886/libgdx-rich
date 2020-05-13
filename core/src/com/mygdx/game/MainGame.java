@@ -125,17 +125,14 @@ public class MainGame extends ApplicationAdapter {
         handlerChain.addHandler(new StartWalkHandler());
         // 路过，每一步的处理
         handlerChain.addHandler(new PassHandler());
-        // 各路神仙施展魔法,或者触发神灵得到效果
-        handlerChain.addHandler(new GodMagicHandler());
         // 停下 踩到路点
         handlerChain.addHandler(new StopWayHandler());
-        //
-        handlerChain.addHandler(new BuyLandHandler());
-        handlerChain.addHandler(new BuildLandHandler());
-        handlerChain.addHandler(new PayLandHandler());
+        // 这里不需要这几个handler了 因为不是固定的，这几个处理会在 action里面
+//        handlerChain.addHandler(new BuyLandHandler());
+//        handlerChain.addHandler(new BuildLandHandler());
+//        handlerChain.addHandler(new PayLandHandler());
 
         handlerChain.addHandler(new FinishRoundHandler());
-
 
         TiledMapTileLayer mapLayer = (TiledMapTileLayer) map.getLayers().get("ground");
         landbase = (TiledMapTileLayer) map.getLayers().get("landbase");
