@@ -1,55 +1,42 @@
 package com.mygdx.game.handler;
 
-import com.mygdx.game.entity.LandPoint;
-import com.mygdx.game.entity.WayPoint;
-import com.mygdx.game.events.BaseEvent;
 
+import com.mygdx.game.actions.BuildAction;
+import com.mygdx.game.actions.BuyLandAction;
+import com.mygdx.game.actions.GodMagicAction;
+import com.mygdx.game.actions.LandSurpriseAction;
+import com.mygdx.game.actions.PayLandAction;
+
+/**
+ * 停下来之后
+ * 检测路点有没有有意外收获
+ * 检测神灵是否需要加成
+ * 检测是否付钱，加盖，购买，进入npc路点
+ */
 public class StopWayHandler extends BaseHandler {
 
     @Override
     public BaseHandler.HandlerEntity doHandle(BaseHandler.HandlerEntity s, HandlerChain chain) {
-        WayPoint current = s.getPlayer().getCurrent();
+        s = waitAction(new LandSurpriseAction(), s);
 
-// 路点的事物
+        int test = test();
+        if (1 == test) {
+            waitAction(new BuyLandAction(), s);
+        } else if (2 == test) {
+            waitAction(new BuildAction(), s);
+        } else if (3 == test) {
+            waitAction(new PayLandAction(), s);
+        } else if (4 == test) {
 
-//然后处理接下来要对土地的操作
-        LandPoint landPoint = current.getLandPoint();
-        if (landPoint.isNothing()) {
-            //该路点对应不是土地模块
-            s.setParcelData(new ParcelData.Builder()
-                    .setPrevHandlerName(this.getClass().getSimpleName())
-                    .build());
-        } else {
-            if (landPoint.isBlank()) {
-                s.setParcelData(new ParcelData.Builder()
-                        .setPrevHandlerName(this.getClass().getSimpleName())
-                        .setTargetHandlerName(BuyLandHandler.class.getSimpleName())
-                        .build());
-            } else {
-                if (s.getPlayer().getName().equals(landPoint.getOwnerName())) {
-                    s.setParcelData(new ParcelData.Builder()
-                            .setPrevHandlerName(this.getClass().getSimpleName())
-                            .setTargetHandlerName(BuildLandHandler.class.getSimpleName())
-                            .build());
-                } else {
-                    s.setParcelData(new ParcelData.Builder()
-                            .setPrevHandlerName(this.getClass().getSimpleName())
-                            .setTargetHandlerName(PayLandHandler.class.getSimpleName())
-                            .build());
-                }
-            }
         }
+
+        waitAction(new GodMagicAction(), s);
         return chain.process(s);
     }
 
-    /**
-     * 处理在路点踩到的东西
-     *
-     * @param point
-     * @return
-     */
-    public BaseEvent.ResultWaiter<WayPoint> stopAtWayPoint(WayPoint point) {
+    public int test() {
+        int console = ReportUtils.console("1,empty land\n2,your land\n3,others land \n4,npc land", Integer.class);
+        return console;
 
-        return null;
     }
 }

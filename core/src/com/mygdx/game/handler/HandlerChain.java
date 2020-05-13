@@ -19,8 +19,8 @@ public class HandlerChain {
         service.submit(new Runnable() {
             @Override
             public void run() {
-                process(entity);
-                System.out.println("任务链执行完毕");
+                BaseHandler.HandlerEntity process = process(entity);
+                System.out.println("任务链执行完毕:"+process.toString());
                 // 触发回调
                 run.run();
             }
@@ -33,14 +33,9 @@ public class HandlerChain {
         } else {
             BaseHandler IHandler = chians.get(index);
             index++;
-            ParcelData target = entity.getParcelData();
-            if (IHandler.isNeedHandle(target.getTargetHandlerName())) {
-                System.out.println("执行" + IHandler.getClass().getSimpleName());
-                BaseHandler.HandlerEntity result = IHandler.doHandle(entity, this);
-                return result;
-            } else {
-                return process(entity);
-            }
+            System.out.println("执行" + IHandler.getClass().getSimpleName());
+            BaseHandler.HandlerEntity result = IHandler.doHandle(entity, this);
+            return result;
         }
     }
 

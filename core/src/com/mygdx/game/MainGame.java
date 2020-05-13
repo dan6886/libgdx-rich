@@ -13,12 +13,9 @@ import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.entity.*;
@@ -126,11 +123,11 @@ public class MainGame extends ApplicationAdapter {
         handlerChain.addHandler(new CheckStartWalkHandler());
         // 开始行走
         handlerChain.addHandler(new StartWalkHandler());
-        // 路过
+        // 路过，每一步的处理
         handlerChain.addHandler(new PassHandler());
         // 各路神仙施展魔法,或者触发神灵得到效果
         handlerChain.addHandler(new GodMagicHandler());
-        // 停下 猜到路点
+        // 停下 踩到路点
         handlerChain.addHandler(new StopWayHandler());
         //
         handlerChain.addHandler(new BuyLandHandler());
@@ -177,6 +174,7 @@ public class MainGame extends ApplicationAdapter {
             if (null == related) {
                 related = LandPoint.NOTHINIG;
             }
+
             wayPointArray[row][col] = new WayPoint(object, row, col, x.intValue(), y.intValue(), related);
             System.out.println("waypoint" + x + "|" + y + "|col:" + col + "row:" + row);
         }

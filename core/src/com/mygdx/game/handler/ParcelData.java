@@ -1,7 +1,5 @@
 package com.mygdx.game.handler;
 
-import com.sun.org.apache.bcel.internal.generic.FNEG;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +8,6 @@ import java.util.Map;
  */
 public class ParcelData {
     public static final String TARGET_ANY = "any";
-
-
     // 上一個handler的名称
     private String prevHandlerName = "";
     private String mTargetHandlerName = "";
@@ -39,12 +35,37 @@ public class ParcelData {
         return map;
     }
 
+    @Override
+    public String toString() {
+        return "ParcelData{" +
+                "prevHandlerName='" + prevHandlerName + '\'' +
+                ", mTargetHandlerName='" + mTargetHandlerName + '\'' +
+                ", mJumpReason=" + mJumpReason +
+                ", map=" + map +
+                '}';
+    }
+
+    public Builder toBuilder() {
+        return new Builder(this);
+    }
+
     public static class Builder {
         public static ParcelData DEFAULT = new Builder().build();
         private String prevHandlerName = "";
         private String mTargetHandlerName = TARGET_ANY;
         private int mJumpReason = -1;
         private Map<String, Object> map = new HashMap<>();
+
+        public Builder() {
+
+        }
+
+        public Builder(ParcelData parcelData) {
+            this.prevHandlerName = parcelData.prevHandlerName;
+            this.mTargetHandlerName = parcelData.mTargetHandlerName;
+            this.mJumpReason = parcelData.mJumpReason;
+            this.map = parcelData.map;
+        }
 
         public Builder setPrevHandlerName(String prevHandlerName) {
             this.prevHandlerName = prevHandlerName;
