@@ -37,7 +37,7 @@ public class BuyLandHandler extends BaseHandler {
      */
     public Object buyLand(Actor1 actor1) {
         ResultReporter<Object> reporter = new ResultReporter<>();
-        MainGame.Instance.buyLand(actor1, reporter);
+        MainGame.Instance.ownLand(actor1, reporter);
         return reporter.waitReport();
     }
 

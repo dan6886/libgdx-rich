@@ -19,6 +19,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.actors.Actor1;
+import com.mygdx.game.actors.God;
+import com.mygdx.game.actors.LandGod;
+import com.mygdx.game.actors.UnluckyGod;
 import com.mygdx.game.entity.*;
 import com.mygdx.game.events.BaseEvent;
 import com.mygdx.game.handler.*;
@@ -47,8 +50,8 @@ public class MainGame extends ApplicationAdapter {
     private TmxMapLoader loader;
     private OrthogonalTiledMapRenderer renderer;
     private TiledMap map;
-    private int width = 640;
-    private int height = 480;
+    public final int width = 640;
+    public final int height = 480;
     private Viewport viewport;
     private int cell_width = 32;
     private int cell_height = 24;
@@ -93,7 +96,7 @@ public class MainGame extends ApplicationAdapter {
         stage = new Stage(viewport);
         stage.addActor(actor1);
         init();
-        actor1.setCurrent(wayPointArray[0][0]);
+        actor1.setCurrent(wayPointArray[1][0]);
         actor1.setPre(wayPointArray[0][0]);
         button = new TextButton("start", skin);
         button.setX(400);
@@ -128,17 +131,12 @@ public class MainGame extends ApplicationAdapter {
         handlerChain.addHandler(new PassHandler());
         // 停下 踩到路点
         handlerChain.addHandler(new StopWayHandler());
-        // 这里不需要这几个handler了 因为不是固定的，这几个处理会在 action里面
-//        handlerChain.addHandler(new BuyLandHandler());
-//        handlerChain.addHandler(new BuildLandHandler());
-//        handlerChain.addHandler(new PayLandHandler());
 
         handlerChain.addHandler(new FinishRoundHandler());
 
         TiledMapTileLayer mapLayer = (TiledMapTileLayer) map.getLayers().get("ground");
         landbase = (TiledMapTileLayer) map.getLayers().get("landbase");
         landBuilding = (TiledMapTileLayer) map.getLayers().get("land");
-
 
         int width = landbase.getWidth();
         int height = landbase.getHeight();
@@ -155,7 +153,7 @@ public class MainGame extends ApplicationAdapter {
 
 
         tileSets = map.getTileSets();
-
+        // 对象层，创建对象LandPoint保存对应 对象
         MapObjects landpoint = map.getLayers().get("landpoint").getObjects();
         for (MapObject object : landpoint) {
             Float x = object.getProperties().get("x", Float.class);
@@ -168,7 +166,7 @@ public class MainGame extends ApplicationAdapter {
             landPointArray[row][col] = point;
             System.out.println(x + "|" + y + "|col:" + col + "row:" + row);
         }
-
+        // 对象层，创建WayPoint 对象保存对象，并且持有对应的landPoint
         MapObjects waypoints = map.getLayers().get("waypoint").getObjects();
         for (MapObject object : waypoints) {
             Float x = object.getProperties().get("x", Float.class);
@@ -179,17 +177,32 @@ public class MainGame extends ApplicationAdapter {
             Integer land_col = object.getProperties().get("land_col", Integer.class);
 
             LandPoint related = landPointArray[land_row][land_col];
-//            //================测试代码，需删除
-//            LandPoint related = landPointArray[1][1];
-//            related.setOwner(new Actor1("red", img));
             if (null == related) {
                 related = LandPoint.NOTHINIG;
             }
-//            //================测试代码结束
             wayPointArray[row][col] = new WayPoint(object, row, col, x.intValue(), y.intValue(), related);
-            System.out.println("waypoint" + x + "|" + y + "|col:" + col + "row:" + row);
+            System.out.println("wayPoint" + x + "|" + y + "|col:" + col + "row:" + row);
         }
+        initGod();
+    }
 
+    private void initGod() {
+        LandGod landGod = new LandGod();
+
+        WayPoint p = wayPointArray[3][0];
+        landGod.setPosition(p.getX(), p.getY());
+        p.setGod(landGod);
+        landGod.setScale(0.5f);
+        stage.addActor(landGod);
+        landGod.setZIndex(5);
+
+        God landGod2 = new UnluckyGod();
+        WayPoint p2 = wayPointArray[2][0];
+        landGod2.setPosition(p2.getX(), p2.getY());
+        p2.setGod(landGod2);
+        landGod2.setScale(0.5f);
+        stage.addActor(landGod2);
+        landGod2.setZIndex(5);
     }
 
     @Override
@@ -303,7 +316,7 @@ public class MainGame extends ApplicationAdapter {
                         if (confirmResult.isOk()) {
                             player.buy(point);
                             BaseEvent.ResultWaiter<BuyResult> waiter1 = new BaseEvent.ResultWaiter<>();
-//                            buyLand(player, waiter1);// 这里提交动画到主线程执行，并且等待结果
+//                            ownLand(player, waiter1);// 这里提交动画到主线程执行，并且等待结果
                             result = waiter1.waitReport();
                             return buySuccess(result);
                         } else {
@@ -471,7 +484,7 @@ public class MainGame extends ApplicationAdapter {
 
     }
 
-    public void buyLand(Actor1 player, ResultReporter<Object> waiter) {
+    public void ownLand(Actor1 player, ResultReporter<Object> waiter) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
@@ -503,6 +516,7 @@ public class MainGame extends ApplicationAdapter {
                 MessageWindow messageWindow = new MessageWindow("tips", skin);
                 messageWindow.setMessage(tips);
                 stage.addActor(messageWindow);
+                messageWindow.setZIndex(2);
                 messageWindow.startDismiss(new Runnable() {
                     @Override
                     public void run() {
@@ -527,7 +541,7 @@ public class MainGame extends ApplicationAdapter {
                     public void clicked(InputEvent event, float x, float y) {
                         System.out.println("消费了点击" + reporter.toString());
                         button.setVisible(false);
-                        reporter.report(3);
+                        reporter.report(1);
                     }
                 });
             }

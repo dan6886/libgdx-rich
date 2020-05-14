@@ -20,7 +20,6 @@ public class PassHandler extends BaseHandler {
 
     private WayPoint doTask2(HandlerEntity entity) {
         ResultReporter<WayPoint> reporter = new ResultReporter<>();
-//        ReportUtils.deley(1, reporter, "walk");
         MainGame.Instance.doWalk(entity.getPlayer(), reporter);
         return reporter.waitReport();
     }

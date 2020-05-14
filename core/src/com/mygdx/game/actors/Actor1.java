@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
@@ -12,17 +13,20 @@ import com.mygdx.game.entity.LandPoint;
 import com.mygdx.game.entity.WayPoint;
 import com.mygdx.game.handler.ResultReporter;
 
-public class Actor1 extends Actor {
+public class Actor1 extends Group {
     private TextureRegion region;
     private WayPoint current;
     private WayPoint pre;
     private String name = "";
     private int state = 1;
     private int cash = 10000;
+    private God god;
 
     public Actor1(String name, Texture texture) {
         region = new TextureRegion(texture, 0, 0, 20, 20);
         this.name = name;
+        setWidth(region.getRegionWidth());
+        setHeight(region.getRegionHeight());
     }
 
     @Override
@@ -56,6 +60,21 @@ public class Actor1 extends Actor {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public God getGod() {
+        return god;
+    }
+
+    public void setGod(God god) {
+        this.god = god;
+    }
+
+    public boolean hasGod(int type) {
+        if (null == god) {
+            return false;
+        }
+        return god.getType() == type;
     }
 
     public void startWalk(ResultReporter<WayPoint> reporter) {
@@ -121,6 +140,19 @@ public class Actor1 extends Actor {
 
     public void payMoney(int money) {
         cash -= money;
+    }
+
+    public void newday() {
+        if (god != null) {
+            god.decreaseActiveDays();
+            if (god.getActiveDays() == 0) {
+                ResultReporter<Object> reporter = new ResultReporter<>();
+                god.deActive(reporter);
+                god = null;
+                reporter.waitReport();
+            }
+        }
+
     }
 
     @Override

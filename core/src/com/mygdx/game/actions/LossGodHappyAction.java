@@ -1,29 +1,21 @@
 package com.mygdx.game.actions;
 
-
-import com.badlogic.gdx.scenes.scene2d.Group;
+import com.mygdx.game.MainGame;
 import com.mygdx.game.actors.Actor1;
 import com.mygdx.game.actors.God;
 import com.mygdx.game.handler.BaseHandler;
 import com.mygdx.game.handler.ResultReporter;
 
-/**
- * 遇到神灵
- */
-public class MetGodHappyAction extends HappyAction {
-    private God god;
-
-    public MetGodHappyAction(God god) {
-        this.god = god;
-    }
-
+public class LossGodHappyAction extends BaseAction<BaseHandler.HandlerEntity> {
     @Override
     public BaseHandler.HandlerEntity doAction(BaseHandler.HandlerEntity entity) {
-        System.out.println("thank you for coming");
+        Actor1 player = entity.getPlayer();
+        God god = player.getGod();
         ResultReporter<Object> reporter = new ResultReporter<>();
-        god.setMaster(entity.getPlayer());
-        god.active(reporter);
+        god.deActive(reporter);
         reporter.waitReport();
-        return super.doAction(entity);
+        MainGame.Instance.showTipsWindow("the damned god finally got away", reporter);
+        reporter.waitReport();
+        return entity;
     }
 }

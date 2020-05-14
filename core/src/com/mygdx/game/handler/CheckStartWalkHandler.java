@@ -7,6 +7,8 @@ public class CheckStartWalkHandler extends BaseHandler {
 
     @Override
     public HandlerEntity doHandle(HandlerEntity s, HandlerChain chain) {
+
+        s.getPlayer().newday();
         Integer count = waitClickStart();
         s.setMoveCount(count);
         return chain.process(s);
