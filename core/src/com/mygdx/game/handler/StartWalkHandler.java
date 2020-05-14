@@ -6,7 +6,7 @@ public class StartWalkHandler extends BaseHandler {
     public BaseHandler.HandlerEntity doHandle(BaseHandler.HandlerEntity s, HandlerChain chain) {
 
         System.out.println("开始了");
-        String dotask = dotask();
+//        String dotask = dotask();
         System.out.println("收到回复");
         return chain.process(s);
     }

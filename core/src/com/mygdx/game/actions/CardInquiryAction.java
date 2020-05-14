@@ -1,7 +1,6 @@
 package com.mygdx.game.actions;
 
 
-import com.mygdx.game.handler.BaseAction;
 import com.mygdx.game.handler.BaseHandler;
 import com.mygdx.game.handler.ReportUtils;
 
@@ -21,7 +20,7 @@ public class CardInquiryAction extends BaseAction<Boolean> {
     }
 
     public boolean test() {
-        Boolean console = ReportUtils.console("will you want to use card to pay free ", Boolean.class);
-        return console;
+
+        return false;
     }
 }

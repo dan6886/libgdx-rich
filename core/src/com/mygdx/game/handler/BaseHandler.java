@@ -1,6 +1,7 @@
 package com.mygdx.game.handler;
 
-import com.mygdx.game.Actor1;
+import com.mygdx.game.actors.Actor1;
+import com.mygdx.game.actions.BaseAction;
 
 public abstract class BaseHandler implements IHandler {
 

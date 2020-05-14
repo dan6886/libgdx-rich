@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
+import com.mygdx.game.MainGame;
 import com.mygdx.game.entity.LandPoint;
 import com.mygdx.game.entity.WayPoint;
 import com.mygdx.game.handler.ResultReporter;

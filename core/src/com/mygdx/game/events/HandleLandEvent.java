@@ -1,6 +1,6 @@
 package com.mygdx.game.events;
 
-import com.mygdx.game.Actor1;
+import com.mygdx.game.actors.Actor1;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.entity.LandPoint;
 

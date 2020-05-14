@@ -1,7 +1,7 @@
 package com.mygdx.game.entity;
 
 import com.badlogic.gdx.maps.MapObject;
-import com.mygdx.game.Actor1;
+import com.mygdx.game.actors.Actor1;
 
 public class LandPoint extends Point {
 

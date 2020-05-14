@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.mygdx.game.actors.Actor1;
 import com.mygdx.game.entity.*;
 import com.mygdx.game.events.BaseEvent;
 import com.mygdx.game.handler.*;
@@ -139,8 +140,7 @@ public class MainGame extends ApplicationAdapter {
         landBuilding = (TiledMapTileLayer) map.getLayers().get("land");
 
         tileSets = map.getTileSets();
-        TiledMapTile tile = tileSets.getTile(61);
-//        mapLayer.getCell(0, 0).setTile(tile);
+//        TiledMapTile tile = tileSets.getTile(44);
 //        landbase.getCell(1, 1).setTile(tile);
         MapObjects landpoint = map.getLayers().get("landpoint").getObjects();
         for (MapObject object : landpoint) {
@@ -167,7 +167,7 @@ public class MainGame extends ApplicationAdapter {
 //          LandPoint related = landPointArray[land_row][land_col];
             //测试代码，需删除
             LandPoint related = landPointArray[1][1];
-            related.setOwner(new Actor1("dd", img));
+            related.setOwner(new Actor1("red", img));
             if (null == related) {
                 related = LandPoint.NOTHINIG;
             }
@@ -502,10 +502,12 @@ public class MainGame extends ApplicationAdapter {
     }
 
     public void showStartButton(ResultReporter<Integer> reporter) {
+        System.out.println("showStartButton1111");
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
                 button.setVisible(true);
+                System.out.println("可见");
                 //这里一定得记得清除上次的监听，否则会引起线程阻塞，上一个reporter 没有释放
                 button.clearListeners();
                 button.addListener(new ClickListener() {

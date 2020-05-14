@@ -6,6 +6,8 @@ import com.mygdx.game.actions.BuyLandAction;
 import com.mygdx.game.actions.GodMagicAction;
 import com.mygdx.game.actions.LandSurpriseAction;
 import com.mygdx.game.actions.PayLandAction;
+import com.mygdx.game.entity.LandPoint;
+import com.mygdx.game.entity.WayPoint;
 
 /**
  * 停下来之后
@@ -19,24 +21,21 @@ public class StopWayHandler extends BaseHandler {
     public BaseHandler.HandlerEntity doHandle(BaseHandler.HandlerEntity s, HandlerChain chain) {
         s = waitAction(new LandSurpriseAction(), s);
 
-        int test = test();
-        if (1 == test) {
-            waitAction(new BuyLandAction(), s);
-        } else if (2 == test) {
-            waitAction(new BuildAction(), s);
-        } else if (3 == test) {
-            waitAction(new PayLandAction(), s);
-        } else if (4 == test) {
+        LandPoint landPoint = s.getPlayer().getCurrent().getLandPoint();
 
+        if (!landPoint.isNothing()) {
+            if (landPoint.isBlank()) {
+                //询问购买
+                waitAction(new BuyLandAction(), s);
+            } else if (s.getPlayer().getName().equals(landPoint.getOwnerName())) {
+                waitAction(new BuildAction(), s);
+            } else if (!s.getPlayer().getName().equals(landPoint.getOwnerName())) {
+                waitAction(new PayLandAction(), s);
+            }
         }
 
         waitAction(new GodMagicAction(), s);
         return chain.process(s);
     }
 
-    public int test() {
-        int console = ReportUtils.console("1,empty land\n2,your land\n3,others land \n4,npc land", Integer.class);
-        return console;
-
-    }
 }

@@ -1,4 +1,6 @@
-package com.mygdx.game.handler;
+package com.mygdx.game.actions;
+
+import com.mygdx.game.handler.BaseHandler;
 
 public abstract class BaseAction<T> {
 
