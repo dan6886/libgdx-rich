@@ -9,8 +9,9 @@ public class LandPoint extends Point {
     private Actor1 owner;
     private String name = "";
     private int level = 0;
+    // 过路费
     private int price = 400;
-    private int buildPrice = price * 1;
+    private int buildPrice = price;
 
     public String getOwnerName() {
         if (null == owner) {
@@ -56,6 +57,9 @@ public class LandPoint extends Point {
     }
 
     public int getBuildPrice() {
+        if (level == 0) {
+            return buildPrice;
+        }
         return price * level;
     }
 
@@ -65,7 +69,7 @@ public class LandPoint extends Point {
 
     public void buildUp() {
         levelUp();
-        setPrice(getPrice() * 2);
+        setPrice((int) (getPrice() * 1.5));
     }
 
     public void levelUp() {
@@ -92,4 +96,14 @@ public class LandPoint extends Point {
         return name + "_" + level;
     }
 
+    @Override
+    public String toString() {
+        return "LandPoint{" +
+                "owner=" + owner +
+                ", name='" + name + '\'' +
+                ", level=" + level +
+                ", price=" + price +
+                ", buildPrice=" + buildPrice +
+                '}' + super.toString();
+    }
 }

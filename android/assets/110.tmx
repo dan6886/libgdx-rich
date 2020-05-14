@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.0" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="32" tileheight="24" infinite="0" nextobjectid="59">
+<map version="1.0" tiledversion="1.1.1" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="32" tileheight="24" infinite="0" nextobjectid="102">
  <tileset firstgid="1" source="land.xml"/>
  <layer name="ground" width="10" height="10">
   <data encoding="base64">
@@ -8,15 +8,15 @@
  </layer>
  <layer name="landbase" width="10" height="10">
   <data encoding="base64">
-   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4AAAAAAAAAAAAAAAAAAABDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+AAAAPgAAAD4AAAAAAAAAPgAAAD4AAAA+AAAAPgAAAAAAAAAAAAAAPgAAAAAAAAA+AAAAAAAAAD4AAAAAAAAAAAAAAD4AAAAAAAAAAAAAAD4AAAA+AAAAPgAAAAAAAAA+AAAAPgAAAD4AAAA+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgAAAD4AAAA+AAAAAAAAAD4AAAA+AAAAPgAAAD4AAAAAAAAAAAAAAD4AAAAAAAAAPgAAAAAAAAA+AAAAAAAAAAAAAAA+AAAAAAAAAAAAAAA+AAAAAAAAAD4AAAAAAAAAPgAAAAAAAAAAAAAAPgAAAAAAAAAAAAAAPgAAAD4AAAA+AAAAAAAAAD4AAAA+AAAAPgAAAD4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
   </data>
  </layer>
  <layer name="land" width="10" height="10">
   <data encoding="base64">
-   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADYAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
   </data>
  </layer>
- <objectgroup name="waypoint" visible="0">
+ <objectgroup name="waypoint">
   <object id="1" x="0" y="216" width="32" height="24">
    <properties>
     <property name="land_col" type="int" value="0"/>
@@ -85,14 +85,14 @@
   </object>
   <object id="12" x="288" y="168" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="8"/>
+    <property name="land_row" type="int" value="2"/>
    </properties>
   </object>
   <object id="13" x="288" y="144" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="8"/>
+    <property name="land_row" type="int" value="3"/>
    </properties>
   </object>
   <object id="14" x="288" y="120" width="32" height="24">
@@ -115,8 +115,8 @@
   </object>
   <object id="17" x="288" y="48" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="8"/>
+    <property name="land_row" type="int" value="7"/>
    </properties>
   </object>
   <object id="18" x="288" y="24" width="32" height="24">
@@ -139,14 +139,14 @@
   </object>
   <object id="21" x="224" y="0" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="7"/>
+    <property name="land_row" type="int" value="8"/>
    </properties>
   </object>
   <object id="22" x="192" y="0" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="6"/>
+    <property name="land_row" type="int" value="8"/>
    </properties>
   </object>
   <object id="23" x="160" y="0" width="32" height="24">
@@ -187,14 +187,14 @@
   </object>
   <object id="29" x="0" y="24" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="1"/>
+    <property name="land_row" type="int" value="8"/>
    </properties>
   </object>
   <object id="30" x="0" y="48" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="1"/>
+    <property name="land_row" type="int" value="7"/>
    </properties>
   </object>
   <object id="31" x="0" y="72" width="32" height="24">
@@ -230,7 +230,7 @@
   <object id="36" x="0" y="168" width="32" height="24">
    <properties>
     <property name="land_col" type="int" value="1"/>
-    <property name="land_row" type="int" value="1"/>
+    <property name="land_row" type="int" value="2"/>
    </properties>
   </object>
   <object id="37" x="0" y="192" width="32" height="24">
@@ -271,14 +271,14 @@
   </object>
   <object id="43" x="192" y="96" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="6"/>
+    <property name="land_row" type="int" value="6"/>
    </properties>
   </object>
   <object id="44" x="224" y="96" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="7"/>
+    <property name="land_row" type="int" value="6"/>
    </properties>
   </object>
   <object id="45" x="256" y="96" width="32" height="24">
@@ -313,14 +313,14 @@
   </object>
   <object id="50" x="128" y="144" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="5"/>
+    <property name="land_row" type="int" value="3"/>
    </properties>
   </object>
   <object id="51" x="128" y="168" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="5"/>
+    <property name="land_row" type="int" value="2"/>
    </properties>
   </object>
   <object id="52" x="128" y="192" width="32" height="24">
@@ -351,5 +351,42 @@
     <property name="type" value="small"/>
    </properties>
   </object>
+  <object id="61" x="192" y="72" width="32" height="24"/>
+  <object id="62" x="224" y="72" width="32" height="24"/>
+  <object id="63" x="256" y="72" width="32" height="24"/>
+  <object id="64" x="64" y="72" width="32" height="24"/>
+  <object id="66" x="96" y="72" width="32" height="24"/>
+  <object id="67" x="32" y="24" width="32" height="24"/>
+  <object id="68" x="32" y="48" width="32" height="24"/>
+  <object id="69" x="64" y="24" width="32" height="24"/>
+  <object id="70" x="96" y="24" width="32" height="24"/>
+  <object id="71" x="96" y="48" width="32" height="24"/>
+  <object id="72" x="160" y="24" width="32" height="24"/>
+  <object id="73" x="160" y="48" width="32" height="24"/>
+  <object id="74" x="192" y="24" width="32" height="24"/>
+  <object id="75" x="224" y="24" width="32" height="24"/>
+  <object id="76" x="256" y="24" height="24"/>
+  <object id="77" x="256" y="24" width="32" height="24"/>
+  <object id="81" x="256" y="48" width="32" height="24"/>
+  <object id="82" x="32" y="120" width="32" height="24"/>
+  <object id="83" x="32" y="144" width="32" height="24"/>
+  <object id="84" x="32" y="168" width="32" height="24"/>
+  <object id="85" x="64" y="120" width="32" height="24"/>
+  <object id="86" x="96" y="120" width="32" height="24"/>
+  <object id="87" x="96" y="144" width="32" height="24"/>
+  <object id="88" x="96" y="168" width="32" height="24"/>
+  <object id="89" x="96" y="192" width="32" height="24"/>
+  <object id="90" x="64" y="192" width="32" height="24"/>
+  <object id="91" x="256" y="192" width="32" height="24"/>
+  <object id="92" x="256" y="168" width="32" height="24"/>
+  <object id="93" x="256" y="144" width="32" height="24"/>
+  <object id="94" x="256" y="120" width="32" height="24"/>
+  <object id="95" x="224" y="120" width="32" height="24"/>
+  <object id="96" x="192" y="120" width="32" height="24"/>
+  <object id="97" x="160" y="120" width="32" height="24"/>
+  <object id="98" x="160" y="144" width="32" height="24"/>
+  <object id="99" x="160" y="168" width="32" height="24"/>
+  <object id="100" x="160" y="192" width="32" height="24"/>
+  <object id="101" x="192" y="192" width="32" height="24"/>
  </objectgroup>
 </map>

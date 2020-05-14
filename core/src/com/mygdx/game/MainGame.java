@@ -139,9 +139,23 @@ public class MainGame extends ApplicationAdapter {
         landbase = (TiledMapTileLayer) map.getLayers().get("landbase");
         landBuilding = (TiledMapTileLayer) map.getLayers().get("land");
 
+
+        int width = landbase.getWidth();
+        int height = landbase.getHeight();
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                TiledMapTileLayer.Cell cell = landbase.getCell(i, j);
+                if (null != cell) {
+                    System.out.println(i + "|" + j);
+                    landBuilding.setCell(i, j, new TiledMapTileLayer.Cell());
+                }
+            }
+        }
+
+
         tileSets = map.getTileSets();
-//        TiledMapTile tile = tileSets.getTile(44);
-//        landbase.getCell(1, 1).setTile(tile);
+
         MapObjects landpoint = map.getLayers().get("landpoint").getObjects();
         for (MapObject object : landpoint) {
             Float x = object.getProperties().get("x", Float.class);
@@ -164,19 +178,18 @@ public class MainGame extends ApplicationAdapter {
             Integer land_row = object.getProperties().get("land_row", Integer.class);
             Integer land_col = object.getProperties().get("land_col", Integer.class);
 
-//          LandPoint related = landPointArray[land_row][land_col];
-            //测试代码，需删除
-            LandPoint related = landPointArray[1][1];
-            related.setOwner(new Actor1("red", img));
+            LandPoint related = landPointArray[land_row][land_col];
+//            //================测试代码，需删除
+//            LandPoint related = landPointArray[1][1];
+//            related.setOwner(new Actor1("red", img));
             if (null == related) {
                 related = LandPoint.NOTHINIG;
             }
-
+//            //================测试代码结束
             wayPointArray[row][col] = new WayPoint(object, row, col, x.intValue(), y.intValue(), related);
             System.out.println("waypoint" + x + "|" + y + "|col:" + col + "row:" + row);
         }
 
-//        showWindow(null);
     }
 
     @Override
@@ -502,7 +515,6 @@ public class MainGame extends ApplicationAdapter {
     }
 
     public void showStartButton(ResultReporter<Integer> reporter) {
-        System.out.println("showStartButton1111");
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {

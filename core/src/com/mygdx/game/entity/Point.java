@@ -10,7 +10,8 @@ public class Point {
     private int col;
     private int x;
     private int y;
-    private String type = "";
+    //默认small
+    private String type = "small";
 
     public Point(MapObject object, int row, int col, int x, int y) {
         this.object = object;
@@ -65,7 +66,9 @@ public class Point {
     }
 
     public void setType(String type) {
-        this.type = type;
+        if (null != type && !"".equals(type)) {
+            this.type = type;
+        }
     }
 
     @Override

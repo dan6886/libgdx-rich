@@ -14,7 +14,7 @@ public class BuyLandAction extends BaseAction<BaseHandler.HandlerEntity> {
         if (confirmResult.isOk()) {
             System.out.println("i will buy");
             buyLand(entity);
-            entity.getPlayer().payMoney(500);
+            entity.getPlayer().buy(entity.getPlayer().getCurrent().getLandPoint());
         }
         return entity;
     }

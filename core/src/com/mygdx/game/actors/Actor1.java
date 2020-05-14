@@ -89,7 +89,16 @@ public class Actor1 extends Actor {
 
     public void buy(LandPoint point) {
         point.setOwner(this);
+        payMoney(point.getPrice());
         System.out.println("购买了土地" + point.toString());
+    }
+
+    public void buyCurrentLand() {
+        LandPoint landPoint = getCurrent().getLandPoint();
+        if (null == landPoint) {
+            throw new IllegalStateException("try to buy null land");
+        }
+        build(landPoint);
     }
 
     public void build(LandPoint point) {

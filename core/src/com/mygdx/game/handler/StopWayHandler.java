@@ -20,15 +20,16 @@ public class StopWayHandler extends BaseHandler {
     @Override
     public BaseHandler.HandlerEntity doHandle(BaseHandler.HandlerEntity s, HandlerChain chain) {
         s = waitAction(new LandSurpriseAction(), s);
-
         LandPoint landPoint = s.getPlayer().getCurrent().getLandPoint();
-
+        System.out.println(s.getPlayer().getCurrent().getLandPoint().toString());
         if (!landPoint.isNothing()) {
             if (landPoint.isBlank()) {
                 //询问购买
                 waitAction(new BuyLandAction(), s);
             } else if (s.getPlayer().getName().equals(landPoint.getOwnerName())) {
-                waitAction(new BuildAction(), s);
+                if (landPoint.isCanLevelUp()) {
+                    waitAction(new BuildAction(), s);
+                }
             } else if (!s.getPlayer().getName().equals(landPoint.getOwnerName())) {
                 waitAction(new PayLandAction(), s);
             }
