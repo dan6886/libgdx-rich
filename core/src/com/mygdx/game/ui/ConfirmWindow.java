@@ -20,14 +20,16 @@ public class ConfirmWindow extends Window {
     private int type;
     private Label label;
     private String text;
+    private Label.LabelStyle style;
 
     public ConfirmWindow(String title, Skin skin) {
         super(title, skin);
     }
 
-    public ConfirmWindow(String title, Skin skin, PublishSubject<ConfirmResult> subject) {
+    public ConfirmWindow(String title, Skin skin, Label.LabelStyle style, PublishSubject<ConfirmResult> subject) {
         super(title, skin);
         this.skin = skin;
+        this.style = style;
         this.subject = subject;
         init();
     }
@@ -43,9 +45,12 @@ public class ConfirmWindow extends Window {
         setMovable(true);
 
         label = new Label("但是\n222\n333\n444\n\n\n\n", skin);
+        label.setStyle(style);
         label.setX(5);
         label.setY(0);
         label.setColor(Color.RED);
+        label.setSize(getWidth(),getHeight());
+        label.setWrap(true);
         TextButton tbOk = new TextButton("OK", skin);
         TextButton tbCancel = new TextButton("CANCEL", skin);
         tbOk.setSize(tbCancel.getPrefWidth(), tbCancel.getPrefHeight());

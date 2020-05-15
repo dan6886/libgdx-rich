@@ -27,7 +27,8 @@ public class BuyLandAction extends BaseAction<BaseHandler.HandlerEntity> {
 
     public ConfirmResult confirmBuy() {
         ResultReporter<ConfirmResult> reporter = new ResultReporter<>();
-        MainGame.Instance.showConfirmWindow("will you buy land for 500", reporter);
+
+        MainGame.Instance.showConfirmWindow("你是否愿意支付来购买此地", reporter);
         return reporter.waitReport();
     }
 

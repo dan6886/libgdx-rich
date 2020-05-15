@@ -10,7 +10,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.tiled.*;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSets;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -25,14 +28,30 @@ import com.mygdx.game.actors.Actor1;
 import com.mygdx.game.actors.God;
 import com.mygdx.game.actors.LandGod;
 import com.mygdx.game.actors.UnluckyGod;
-import com.mygdx.game.entity.*;
+import com.mygdx.game.entity.BaseResult;
+import com.mygdx.game.entity.BuildResult;
+import com.mygdx.game.entity.BuyResult;
+import com.mygdx.game.entity.ConfirmResult;
+import com.mygdx.game.entity.LandPoint;
+import com.mygdx.game.entity.PayResult;
+import com.mygdx.game.entity.WayPoint;
 import com.mygdx.game.events.BaseEvent;
-import com.mygdx.game.handler.*;
+import com.mygdx.game.handler.BaseHandler;
+import com.mygdx.game.handler.CheckStartWalkHandler;
+import com.mygdx.game.handler.FinishRoundHandler;
+import com.mygdx.game.handler.HandlerChain;
+import com.mygdx.game.handler.PassHandler;
+import com.mygdx.game.handler.ResultReporter;
+import com.mygdx.game.handler.StartWalkHandler;
+import com.mygdx.game.handler.StopWayHandler;
 import com.mygdx.game.ui.ConfirmWindow;
 import com.mygdx.game.ui.GameStage;
 import com.mygdx.game.ui.MessageWindow;
 import com.mygdx.game.ui.StartButton;
 import com.mygdx.game.ui.UIStage;
+
+import java.util.List;
+import java.util.Random;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -43,9 +62,6 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
-
-import java.util.List;
-import java.util.Random;
 
 public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
@@ -69,7 +85,7 @@ public class MainGame extends ApplicationAdapter {
     private WayPoint[][] wayPointArray = null;
     private LandPoint[][] landPointArray = null;
 
-    private Skin skin;
+    public Skin skin;
     private TiledMapTileLayer landbase;
     private TiledMapTileLayer landBuilding;
     private TileSetIdManager tileSetIdManager;
@@ -77,7 +93,7 @@ public class MainGame extends ApplicationAdapter {
     HandlerChain handlerChain = new HandlerChain();
     private TextButton button;
     private GameStage stageGame;
-    Stage stageUI;
+    UIStage stageUI;
 
     @Override
     public void create() {
@@ -99,7 +115,7 @@ public class MainGame extends ApplicationAdapter {
         wayPointArray = new WayPoint[Constants.ROW_NUM][Constants.COL_NUM];
         landPointArray = new LandPoint[Constants.ROW_NUM][Constants.COL_NUM];
         viewport = new FillViewport(width, height, camera);
-        viewport.setScreenSize(width, height);
+        viewport.update(100, 100, true);
         renderer = new OrthogonalTiledMapRenderer(map);
         actor1 = new Actor1("red", img);
         stageGame = new GameStage(viewport);
@@ -452,7 +468,7 @@ public class MainGame extends ApplicationAdapter {
             @Override
             public void run() {
                 System.out.println("主循环" + Thread.currentThread().getName());
-                ConfirmWindow tips = new ConfirmWindow("tips" + type, skin, subject);
+                ConfirmWindow tips = new ConfirmWindow("tips" + type, skin,null, subject);
                 tips.setText(text);
                 stageGame.addActor(tips);
             }
@@ -497,25 +513,7 @@ public class MainGame extends ApplicationAdapter {
     }
 
     public void showConfirmWindow(String text, ResultReporter<ConfirmResult> reporter) {
-        PublishSubject<ConfirmResult> subject = PublishSubject.create();
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("主循环" + Thread.currentThread().getName());
-                ConfirmWindow tips = new ConfirmWindow("tips", skin, subject);
-                tips.setText(text);
-                stageUI.addActor(tips);
-            }
-        });
-        //开启线程 showWindow
-
-        subject.observeOn(Schedulers.newThread())
-                .subscribe(new Consumer<ConfirmResult>() {
-                    @Override
-                    public void accept(ConfirmResult confirmResult) throws Exception {
-                        reporter.report(confirmResult);
-                    }
-                });
+        stageUI.showConfirmWindow(text, reporter);
 
     }
 
@@ -545,22 +543,7 @@ public class MainGame extends ApplicationAdapter {
 
 
     public void showTipsWindow(String tips, ResultReporter<Object> reporter) {
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                MessageWindow messageWindow = new MessageWindow("tips", skin);
-                messageWindow.setMessage(tips);
-                stageUI.addActor(messageWindow);
-                messageWindow.setZIndex(2);
-                messageWindow.startDismiss(new Runnable() {
-                    @Override
-                    public void run() {
-                        messageWindow.remove();
-                        reporter.report(new Object());
-                    }
-                });
-            }
-        });
+        stageUI.showTipsWindow(tips, reporter);
     }
 
     public void showStartButton(ResultReporter<Integer> reporter) {

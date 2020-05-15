@@ -19,6 +19,7 @@ import io.reactivex.subjects.PublishSubject;
 
 public class MessageWindow extends Window implements InputProcessor {
     private Skin skin;
+    private Label.LabelStyle style;
     private String message = "";
     private Label label;
     DelayAction delay;
@@ -45,9 +46,11 @@ public class MessageWindow extends Window implements InputProcessor {
         addAction(delay);
     }
 
-    public MessageWindow(String title, Skin skin) {
+    public MessageWindow(String title, Skin skin, Label.LabelStyle style) {
+
         super(title, skin);
         this.skin = skin;
+        this.style = style;
         InputMultiplexer inputProcessor = (InputMultiplexer) Gdx.input.getInputProcessor();
         inputProcessor.addProcessor(0, this);
         init();
@@ -64,6 +67,7 @@ public class MessageWindow extends Window implements InputProcessor {
         setMovable(true);
 
         label = new Label("i am rich", skin);
+        label.setStyle(style);
         label.setWidth(getWidth());
         label.setHeight(100f);
         label.setWrap(true);
