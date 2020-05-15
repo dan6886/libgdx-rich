@@ -27,10 +27,21 @@ public class TileSetIdManager {
         house.put("house_5", 15);
     }
 
+    /**
+     * 不同的级别 获取不同的建筑资源
+     * @param key
+     * @return
+     */
     public int getHouseTileId(String key) {
         return house.get(key);
     }
 
+    /**
+     * 返回玩家对应的地基资源id，就是那个虚线框，不同玩家有不同颜色
+     * @param playerName
+     * @param type
+     * @return
+     */
     public int getLandBaseId(String playerName, String type) {
         return player.get(playerName).get(type + "_land");
     }

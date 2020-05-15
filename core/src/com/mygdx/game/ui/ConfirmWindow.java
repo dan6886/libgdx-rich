@@ -9,7 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.mygdx.game.MainGame;
 import com.mygdx.game.entity.ConfirmResult;
+
 import io.reactivex.subjects.PublishSubject;
 
 public class ConfirmWindow extends Window {
@@ -35,8 +37,8 @@ public class ConfirmWindow extends Window {
         // 默认文字是在左边显示，需要手动设置居中
         getTitleLabel().setAlignment(Align.center);
         // 默认window的位置是在左下角，需重新设置
-        setX(Gdx.graphics.getWidth() / 2 - getWidth() / 2);
-        setY(Gdx.graphics.getHeight() / 2 - getHeight() / 2);
+        setX(MainGame.Instance.width / 2 - getWidth() / 2);
+        setY(MainGame.Instance.height / 2 - getHeight() / 2);
         // 拖动TitleLabel，window会移动
         setMovable(true);
 

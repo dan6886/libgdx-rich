@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.actors.Actor1;
 import com.mygdx.game.actors.God;
@@ -27,6 +28,8 @@ import com.mygdx.game.events.BaseEvent;
 import com.mygdx.game.handler.*;
 import com.mygdx.game.ui.ConfirmWindow;
 import com.mygdx.game.ui.MessageWindow;
+import com.mygdx.game.ui.StartButton;
+import com.mygdx.game.ui.UIStage;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -50,12 +53,13 @@ public class MainGame extends ApplicationAdapter {
     private TmxMapLoader loader;
     private OrthogonalTiledMapRenderer renderer;
     private TiledMap map;
-    public final int width = 640;
-    public final int height = 480;
+    public int width = 687;
+    public int height = 360;
     private Viewport viewport;
     private int cell_width = 32;
     private int cell_height = 24;
     private Actor1 actor1;
+    public static final int FACTOR = 3;
     /**
      * 从下往上 row 0-->10
      * 从左到右 col 0-->10
@@ -70,6 +74,7 @@ public class MainGame extends ApplicationAdapter {
     TiledMapTileSets tileSets;
     HandlerChain handlerChain = new HandlerChain();
     private TextButton button;
+    Stage stageUI;
 
     @Override
     public void create() {
@@ -80,32 +85,40 @@ public class MainGame extends ApplicationAdapter {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         camera = new OrthographicCamera();
-        camera.position.set(width / 2, height / 2, 0);
-
+        camera.position.set(width/2, height/2, 0);
+        Gdx.app.log("gdx", Gdx.graphics.getWidth() / FACTOR + "");
+        Gdx.app.log("gdx", Gdx.graphics.getHeight() / FACTOR + "");
         camera.update();
         loader = new TmxMapLoader();
         map = loader.load("110.tmx");
-
         Constants.ROW_NUM = map.getProperties().get("height", Integer.class);
         Constants.COL_NUM = map.getProperties().get("width", Integer.class);
         wayPointArray = new WayPoint[Constants.ROW_NUM][Constants.COL_NUM];
         landPointArray = new LandPoint[Constants.ROW_NUM][Constants.COL_NUM];
-        viewport = new FitViewport(640, 480, camera);
+        viewport = new FillViewport(width, height, camera);
+        viewport.setScreenSize(width, height);
         renderer = new OrthogonalTiledMapRenderer(map);
         actor1 = new Actor1("red", img);
-        stage = new Stage(viewport);
+        stage = new GameStage(viewport);
+
         stage.addActor(actor1);
         init();
         actor1.setCurrent(wayPointArray[1][0]);
         actor1.setPre(wayPointArray[0][0]);
-        button = new TextButton("start", skin);
-        button.setX(400);
-        button.setY(100);
-        button.setSize(160,100);
-        stage.addActor(button);
+
         InputMultiplexer multiplexer = new InputMultiplexer();
+        stageUI = new UIStage(new FillViewport(width, height));
+
+        multiplexer.addProcessor(stageUI);
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
+
+
+        button = new StartButton("start", skin);
+        stageUI.addActor(button);
+        button.setX(0);
+        button.setY(0);
+        button.setSize(160, 100);
         prepareWalk();
     }
 
@@ -136,8 +149,8 @@ public class MainGame extends ApplicationAdapter {
         handlerChain.addHandler(new FinishRoundHandler());
 
         TiledMapTileLayer mapLayer = (TiledMapTileLayer) map.getLayers().get("ground");
-        landbase = (TiledMapTileLayer) map.getLayers().get("landbase");
-        landBuilding = (TiledMapTileLayer) map.getLayers().get("land");
+        landbase = (TiledMapTileLayer) map.getLayers().get("landBase");
+        landBuilding = (TiledMapTileLayer) map.getLayers().get("landBuilding");
 
         int width = landbase.getWidth();
         int height = landbase.getHeight();
@@ -210,15 +223,15 @@ public class MainGame extends ApplicationAdapter {
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        Camera camera = stage.getCamera();
+//        camera.position.set(actor1.getX(), actor1.getY(), 0);
         renderer.setView((OrthographicCamera) stage.getCamera());
         renderer.render();
-//        batch.begin();
-////        batch.draw(img, 0, 0);
-//        batch.end();
 
         stage.draw();
         stage.act();
+        stageUI.draw();
+        stageUI.act();
 
     }
 
@@ -485,13 +498,13 @@ public class MainGame extends ApplicationAdapter {
 
     }
 
-    public void ownLand(Actor1 player, ResultReporter<Object> waiter) {
+    public void ownLand(Actor1 player, ResultReporter<Object> reporter) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
                 int id = tileSetIdManager.getLandBaseId(player.getName(), player.getCurrent().getLandPoint().getType());
                 TiledMapUtils.markTileOwner(landbase, player.getCurrent().getLandPoint(), tileSets, id);
-                waiter.report(new Object());
+                reporter.report(new Object());
             }
         });
         //开启线程 showWindow
@@ -542,7 +555,9 @@ public class MainGame extends ApplicationAdapter {
                     public void clicked(InputEvent event, float x, float y) {
                         System.out.println("消费了点击" + reporter.toString());
                         button.setVisible(false);
-                        reporter.report(1);
+                        Random random = new Random();
+                        int i = 1 + random.nextInt(7);
+                        reporter.report(i);
                     }
                 });
             }

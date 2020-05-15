@@ -111,8 +111,6 @@ public class TiledMapUtils {
 
     public static void markTileOwner(TiledMapTileLayer layer, LandPoint point, TiledMapTileSets sets, int id) {
         TiledMapTile tile = sets.getTile(id);
-//        layer.getCell(point.getRow(), point.getCol()).setTile(tile);
-        int row = layer.getHeight() - point.getRow();
         layer.getCell(point.getCol(), point.getRow()).setTile(tile);
     }
 
