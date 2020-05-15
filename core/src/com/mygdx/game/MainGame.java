@@ -101,6 +101,7 @@ public class MainGame extends ApplicationAdapter {
         button = new TextButton("start", skin);
         button.setX(400);
         button.setY(100);
+        button.setSize(160,100);
         stage.addActor(button);
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);

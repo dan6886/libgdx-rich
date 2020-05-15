@@ -26,7 +26,8 @@ public class LandSurpriseAction extends BaseAction<BaseHandler.HandlerEntity> {
                     //todo nothing
                 }
             }
-
+            // 路点不再持有god
+            current.setGod(null);
             if (god.getType() > 3) {
                 waitAction(new MetGodHappyAction(god), entity);
             } else {

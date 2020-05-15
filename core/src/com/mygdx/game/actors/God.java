@@ -89,8 +89,8 @@ public abstract class God extends Actor {
     }
 
     public void active(ResultReporter reporter) {
-        MoveToAction moveToAction = Actions.moveTo(MainGame.Instance.width / 2, MainGame.Instance.height / 2, 2);
-        ScaleByAction scaleByAction = Actions.scaleBy(0.5f, 0.5f, 2);
+        MoveToAction moveToAction = Actions.moveTo(MainGame.Instance.width / 2, MainGame.Instance.height / 2, 1);
+        ScaleByAction scaleByAction = Actions.scaleBy(0.5f, 0.5f, 1);
         ParallelAction parallel = Actions.parallel(moveToAction, scaleByAction);
         RepeatAction repeat = Actions.repeat(3,
                 Actions.sequence(
