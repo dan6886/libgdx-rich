@@ -1,7 +1,10 @@
 package com.mygdx.game.handler;
 
 
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.MainGame;
+import com.mygdx.game.ui.GameStage;
 
 public class CheckStartWalkHandler extends BaseHandler {
 
@@ -11,6 +14,8 @@ public class CheckStartWalkHandler extends BaseHandler {
         s.getPlayer().newday();
         Integer count = waitClickStart();
         s.setMoveCount(count);
+        GameStage parent = (GameStage) (s.getPlayer().getStage());
+        parent.setState(GameStage.STATE_RUN);
         return chain.process(s);
     }
 

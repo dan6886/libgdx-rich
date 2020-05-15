@@ -12,6 +12,8 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -27,6 +29,7 @@ import com.mygdx.game.entity.*;
 import com.mygdx.game.events.BaseEvent;
 import com.mygdx.game.handler.*;
 import com.mygdx.game.ui.ConfirmWindow;
+import com.mygdx.game.ui.GameStage;
 import com.mygdx.game.ui.MessageWindow;
 import com.mygdx.game.ui.StartButton;
 import com.mygdx.game.ui.UIStage;
@@ -48,7 +51,6 @@ public class MainGame extends ApplicationAdapter {
     SpriteBatch batch;
     Texture img;
     public static MainGame Instance;
-    private Stage stage;
     private OrthographicCamera camera;
     private TmxMapLoader loader;
     private OrthogonalTiledMapRenderer renderer;
@@ -74,6 +76,7 @@ public class MainGame extends ApplicationAdapter {
     TiledMapTileSets tileSets;
     HandlerChain handlerChain = new HandlerChain();
     private TextButton button;
+    private GameStage stageGame;
     Stage stageUI;
 
     @Override
@@ -85,7 +88,7 @@ public class MainGame extends ApplicationAdapter {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
         camera = new OrthographicCamera();
-        camera.position.set(width/2, height/2, 0);
+        camera.position.set(width / 2, height / 2, 0);
         Gdx.app.log("gdx", Gdx.graphics.getWidth() / FACTOR + "");
         Gdx.app.log("gdx", Gdx.graphics.getHeight() / FACTOR + "");
         camera.update();
@@ -99,9 +102,9 @@ public class MainGame extends ApplicationAdapter {
         viewport.setScreenSize(width, height);
         renderer = new OrthogonalTiledMapRenderer(map);
         actor1 = new Actor1("red", img);
-        stage = new GameStage(viewport);
+        stageGame = new GameStage(viewport);
 
-        stage.addActor(actor1);
+        stageGame.addActor(actor1);
         init();
         actor1.setCurrent(wayPointArray[1][0]);
         actor1.setPre(wayPointArray[0][0]);
@@ -110,7 +113,7 @@ public class MainGame extends ApplicationAdapter {
         stageUI = new UIStage(new FillViewport(width, height));
 
         multiplexer.addProcessor(stageUI);
-        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(stageGame);
         Gdx.input.setInputProcessor(multiplexer);
 
 
@@ -207,7 +210,7 @@ public class MainGame extends ApplicationAdapter {
         landGod.setPosition(p.getX(), p.getY());
         p.setGod(landGod);
         landGod.setScale(0.5f);
-        stage.addActor(landGod);
+        stageGame.addActor(landGod);
         landGod.setZIndex(5);
 
         God landGod2 = new UnluckyGod();
@@ -215,7 +218,7 @@ public class MainGame extends ApplicationAdapter {
         landGod2.setPosition(p2.getX(), p2.getY());
         p2.setGod(landGod2);
         landGod2.setScale(0.5f);
-        stage.addActor(landGod2);
+        stageGame.addActor(landGod2);
         landGod2.setZIndex(5);
     }
 
@@ -223,15 +226,33 @@ public class MainGame extends ApplicationAdapter {
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        Camera camera = stage.getCamera();
-//        camera.position.set(actor1.getX(), actor1.getY(), 0);
-        renderer.setView((OrthographicCamera) stage.getCamera());
+        Camera camera = stageGame.getCamera();
+        if (stageGame.getState() == GameStage.STATE_RUN) {
+            smoothMoveTo(new Vector2(actor1.getX(), actor1.getY()));
+        }
+        renderer.setView((OrthographicCamera) stageGame.getCamera());
         renderer.render();
-
-        stage.draw();
-        stage.act();
+        stageGame.draw();
+        stageGame.act();
         stageUI.draw();
         stageUI.act();
+
+    }
+
+    private Vector2 oldPositionVector = new Vector2();
+
+    public void smoothMoveTo(Vector2 target) {
+        oldPositionVector.y = camera.position.y;
+        oldPositionVector.x = camera.position.x;
+        System.out.println("target:" + target.toString());
+        // 使用线性内插，起到平顺过度的效果
+        if (target.x != 0 || target.y != 0) {
+            oldPositionVector.lerp(target, 3 * Math.min(0.06f, Gdx.graphics.getDeltaTime()));
+        }
+
+        System.out.println("old:" + oldPositionVector.toString());
+        camera.position.x = oldPositionVector.x;
+        camera.position.y = oldPositionVector.y;
 
     }
 
@@ -433,7 +454,7 @@ public class MainGame extends ApplicationAdapter {
                 System.out.println("主循环" + Thread.currentThread().getName());
                 ConfirmWindow tips = new ConfirmWindow("tips" + type, skin, subject);
                 tips.setText(text);
-                stage.addActor(tips);
+                stageGame.addActor(tips);
             }
         });
         //开启线程 showWindow
@@ -483,7 +504,7 @@ public class MainGame extends ApplicationAdapter {
                 System.out.println("主循环" + Thread.currentThread().getName());
                 ConfirmWindow tips = new ConfirmWindow("tips", skin, subject);
                 tips.setText(text);
-                stage.addActor(tips);
+                stageUI.addActor(tips);
             }
         });
         //开启线程 showWindow
@@ -529,7 +550,7 @@ public class MainGame extends ApplicationAdapter {
             public void run() {
                 MessageWindow messageWindow = new MessageWindow("tips", skin);
                 messageWindow.setMessage(tips);
-                stage.addActor(messageWindow);
+                stageUI.addActor(messageWindow);
                 messageWindow.setZIndex(2);
                 messageWindow.startDismiss(new Runnable() {
                     @Override
@@ -562,5 +583,16 @@ public class MainGame extends ApplicationAdapter {
                 });
             }
         });
+    }
+
+    /**
+     * 因为stageGame的camera会移动，这个时候要获取相机的位置，这个位置在视觉上是屏幕中心，
+     * stageGame里面的成员需要中心显示参考相机的位置即可
+     *
+     * @return
+     */
+    public Vector2 getCenterPositionFromCamera() {
+        Vector3 p = stageGame.getCamera().position;
+        return new Vector2(p.x, p.y);
     }
 }

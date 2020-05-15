@@ -3,6 +3,7 @@ package com.mygdx.game.actors;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
@@ -39,7 +40,6 @@ public abstract class God extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-//        batch.draw(region, getX(), getY());
         batch.draw(
                 region,
                 getX(), getY(),
@@ -89,7 +89,10 @@ public abstract class God extends Actor {
     }
 
     public void active(ResultReporter reporter) {
-        MoveToAction moveToAction = Actions.moveTo(MainGame.Instance.width / 2, MainGame.Instance.height / 2, 1);
+        System.out.println("center:"+MainGame.Instance.getCenterPositionFromCamera());
+
+        Vector2 centerPositionFromCamera = MainGame.Instance.getCenterPositionFromCamera();
+        MoveToAction moveToAction = Actions.moveTo(centerPositionFromCamera.x, centerPositionFromCamera.y, 1);
         ScaleByAction scaleByAction = Actions.scaleBy(0.5f, 0.5f, 1);
         ParallelAction parallel = Actions.parallel(moveToAction, scaleByAction);
         RepeatAction repeat = Actions.repeat(3,
