@@ -100,9 +100,15 @@ object TiledMapUtils {
         return dest
     }
 
+    /**
+     *
+     * getCell(x,y)
+     * x = 从左到右
+     * y = 从下到上
+     */
     fun markTileOwner(layer: TiledMapTileLayer?, point: LandPoint, sets: TiledMapTileSets?, id: Int) {
         val tile: TiledMapTile = sets!!.getTile(id)
-        layer!!.getCell(point.row, point.col).setTile(tile)
+        layer!!.getCell(point.col, point.row).setTile(tile)
     }
 
     fun getNextWayPoint(currentWayPoint: WayPoint?, preWayPoint: WayPoint?): WayPoint {

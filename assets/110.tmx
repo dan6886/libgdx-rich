@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.0" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="32" tileheight="24" infinite="0" nextobjectid="59">
+<map version="1.0.0" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="32" tileheight="24" nextobjectid="59">
  <tileset firstgid="1" source="land.xml"/>
  <layer name="ground" width="10" height="10">
   <data encoding="base64">
@@ -16,7 +16,7 @@
    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADYAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
   </data>
  </layer>
- <objectgroup name="waypoint" visible="0">
+ <objectgroup name="waypoint">
   <object id="1" x="0" y="216" width="32" height="24">
    <properties>
     <property name="land_col" type="int" value="0"/>
@@ -199,14 +199,9 @@
   </object>
   <object id="31" x="0" y="72" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
-   </properties>
-  </object>
-  <object id="32" x="0" y="96" width="32">
-   <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="1"/>
+    <property name="land_row" type="int" value="6"/>
+    <property name="test" type="bool" value="true"/>
    </properties>
   </object>
   <object id="33" x="0" y="96" width="32" height="24">
@@ -241,8 +236,8 @@
   </object>
   <object id="38" x="32" y="96" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="1"/>
+    <property name="land_row" type="int" value="6"/>
    </properties>
   </object>
   <object id="39" x="64" y="96" width="32" height="24">
@@ -265,14 +260,14 @@
   </object>
   <object id="42" x="160" y="96" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="5"/>
+    <property name="land_row" type="int" value="6"/>
    </properties>
   </object>
   <object id="43" x="192" y="96" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="5"/>
+    <property name="land_row" type="int" value="6"/>
    </properties>
   </object>
   <object id="44" x="224" y="96" width="32" height="24">
@@ -295,14 +290,14 @@
   </object>
   <object id="47" x="128" y="48" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="5"/>
+    <property name="land_row" type="int" value="6"/>
    </properties>
   </object>
   <object id="48" x="128" y="72" width="32" height="24">
    <properties>
-    <property name="land_col" type="int" value="0"/>
-    <property name="land_row" type="int" value="0"/>
+    <property name="land_col" type="int" value="5"/>
+    <property name="land_row" type="int" value="6"/>
    </properties>
   </object>
   <object id="49" x="128" y="120" width="32" height="24">
@@ -338,17 +333,18 @@
   </object>
   <object id="54" x="32" y="72" width="32" height="24">
    <properties>
+    <property name="test" type="bool" value="true"/>
     <property name="type" value="small"/>
    </properties>
   </object>
   <object id="55" x="160" y="72" width="32" height="24">
    <properties>
-    <property name="type" value="small"/>
+    <property name="type" value="big"/>
    </properties>
   </object>
   <object id="56" x="224" y="192" width="32" height="24">
    <properties>
-    <property name="type" value="small"/>
+    <property name="type" value="big"/>
    </properties>
   </object>
  </objectgroup>

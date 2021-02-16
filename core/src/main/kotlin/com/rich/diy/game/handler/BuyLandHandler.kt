@@ -13,18 +13,18 @@ class BuyLandHandler : BaseHandler() {
         val confirmResult: ConfirmResult = buyLandConfirm()
         if (confirmResult.isOk) {
             val player: Actor1? = s.player
-            val landPoint: LandPoint = s.player!!.getCurrent()!!.landPoint
+            val landPoint: LandPoint = s.player!!.getCurrent().landPoint
             player!!.buy(landPoint)
-            buyLand(player)
+            buyLand()
         } else {
         }
         return chain.process(s)
     }
 
-    fun buyLandConfirm(): ConfirmResult {
-       return LandEvent<ConfirmResult>("buyLandConfirm").apply {
-           msg = "will you want to buy this land?"
-       }.postAndWait()
+    private fun buyLandConfirm(): ConfirmResult {
+        return LandEvent<ConfirmResult>("buyLandConfirm").apply {
+            msg = "will you want to buy this land?"
+        }.postAndWait()
     }
 
     /**
@@ -33,8 +33,7 @@ class BuyLandHandler : BaseHandler() {
      * @param actor1
      * @return
      */
-    fun buyLand(actor1: Actor1?): Any {
-        val reporter = ResultReporter<Any>()
+    fun buyLand(): Any {
         return LandEvent<Any>("buyLand").postAndWait()
     }
 }

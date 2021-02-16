@@ -23,8 +23,11 @@ import com.rich.diy.game.entity.LandPoint
 import com.rich.diy.game.events.ActionEvent
 import com.rich.diy.game.events.LandEvent
 import com.rich.diy.game.events.StartEvent
+import com.rich.diy.game.events.TipsEvent
 import com.rich.diy.game.handler.*
-import com.rich.diy.game.ui.win
+import com.rich.diy.game.ui.confirmWindow
+import com.rich.diy.game.ui.delayRemove
+import com.rich.diy.game.ui.tipWindow
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -72,6 +75,8 @@ class FirstScreen(val stage: Stage) : KtxScreen {
     var handlerChain: HandlerChain1 = HandlerChain1()
     private lateinit var actor1: Actor1
     private var startButton = scene2d.textButton("start", style = "decorative") {
+        x = 400F
+        y = 30F
     }
     private val camera = OrthographicCamera().apply {
         position.set((640 / 2).toFloat(), (480 / 2).toFloat(), 0f)
@@ -98,9 +103,9 @@ class FirstScreen(val stage: Stage) : KtxScreen {
         handlerChain.addHandler(PayLandHandler())
         handlerChain.addHandler(FinishRoundHandler())
         actor1 = Actor1(
-            "dan", Texture("badlogic.jpg")
+            "red", Texture("badlogic.jpg")
         )
-        actor1.currentWayPoint = LandManager.get().wayPointArray[0][0]
+        actor1.currentWayPoint = LandManager.get().wayPointArray[5][4]!!
         renderer = OrthogonalTiledMapRenderer(LandManager.get().map)
         EventBus.getDefault().register(this)
     }
@@ -156,40 +161,6 @@ class FirstScreen(val stage: Stage) : KtxScreen {
         EventBus.getDefault().unregister(this)
     }
 
-    fun showStartButton(reporter: ResultReporter<Int?>) {
-        Gdx.app.postRunnable(Runnable {
-            startButton.setVisible(true)
-            //这里一定得记得清除上次的监听，否则会引起线程阻塞，上一个reporter 没有释放
-            startButton.clearListeners()
-            startButton.addListener(object : ClickListener() {
-                override fun clicked(event: InputEvent, x: Float, y: Float) {
-                    System.out.println("消费了点击" + reporter.toString())
-                    startButton.setVisible(false)
-                    reporter.report(1)
-                }
-            })
-        })
-    }
-
-
-    fun showConfirmWindow(text: String?, reporter: ResultReporter<ConfirmResult?>) {
-//        val subject: PublishSubject<ConfirmResult> = PublishSubject.create()
-//        Gdx.app.postRunnable(Runnable {
-//            println("主循环" + Thread.currentThread().name)
-//            val tips = ConfirmWindow("tips", skin, subject)
-//            tips.setText(text)
-//            stage!!.addActor(tips)
-//        })
-//        //开启线程 showWindow
-//        subject.observeOn(Schedulers.newThread())
-//            .subscribe(object : Consumer<ConfirmResult?>() {
-//                @Throws(Exception::class)
-//                override fun accept(confirmResult: ConfirmResult?) {
-//                    reporter.report(confirmResult)
-//                }
-//            })
-    }
-
     fun buyLand(player: Actor1, waiter: ResultReporter<Any?>) {
         Gdx.app.postRunnable(Runnable {
             val id = TileSetIdManager.get().getLandBaseId(player.name, player.currentWayPoint!!.landPoint.type)
@@ -236,7 +207,7 @@ class FirstScreen(val stage: Stage) : KtxScreen {
             when (baseEvent.type) {
                 "buyLandConfirm" -> {
                     val subject: PublishSubject<ConfirmResult> = PublishSubject.create()
-                    val tips = win(baseEvent.msg, subject)
+                    val tips = confirmWindow(baseEvent.msg, subject)
                     stage.addActor(tips)
                     subject.observeOn(Schedulers.newThread())
                         .subscribe(object : Consumer<ConfirmResult> {
@@ -248,15 +219,37 @@ class FirstScreen(val stage: Stage) : KtxScreen {
                 }
                 "buyLand" -> {
                     val id: Int =
-                        TileSetIdManager.get().getLandBaseId(actor1.getName(), actor1.currentWayPoint!!.landPoint.type)
+                        TileSetIdManager.get().getLandBaseId(actor1.name, actor1.currentWayPoint.landPoint.type)
                     TiledMapUtils.markTileOwner(
                         LandManager.get().getLayerByName(LANDBASE),
-                        actor1.currentWayPoint!!.landPoint,
+                        actor1.currentWayPoint.landPoint,
                         LandManager.get().tileSets,
                         id
                     )
                     baseEvent.resultReporter.report(Any())
                 }
+                "build_confirm" -> {
+                    val subject: PublishSubject<ConfirmResult> = PublishSubject.create()
+                    val tips = confirmWindow(baseEvent.msg, subject)
+                    stage.addActor(tips)
+                    subject.observeOn(Schedulers.newThread())
+                        .subscribe { confirmResult -> baseEvent.resultReporter.report(confirmResult as Any) }
+                }
+                "build_up" -> {
+                    val tiledName = baseEvent.player.currentWayPoint.landPoint.buildingTiledName
+                    val houseTileId = TileSetIdManager.get().getHouseTileId(tiledName)
+                    TiledMapUtils.markTileOwner(
+                        LandManager.get().getLayerByName(LAND),
+                        actor1.currentWayPoint.landPoint,
+                        LandManager.get().tileSets,
+                        houseTileId
+                    )
+                    baseEvent.resultReporter.report(Any())
+                }
+                else -> {
+                    println("error ")
+                }
+
             }
         }
 
@@ -266,13 +259,13 @@ class FirstScreen(val stage: Stage) : KtxScreen {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun handleStartEvent(startEvent: StartEvent) {
         Gdx.app.postRunnable(Runnable {
-            startButton.setVisible(true)
+            startButton.isVisible = true
             //这里一定得记得清除上次的监听，否则会引起线程阻塞，上一个reporter 没有释放
             startButton.clearListeners()
             startButton.addListener(object : ClickListener() {
                 override fun clicked(event: InputEvent, x: Float, y: Float) {
                     System.out.println("消费了点击" + startEvent.resultReporter.toString())
-                    startButton.setVisible(false)
+                    startButton.isVisible = false
                     startEvent.resultReporter.report(1)
                 }
             })
@@ -287,4 +280,17 @@ class FirstScreen(val stage: Stage) : KtxScreen {
             })
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    fun handleTipsEvent(tipsEvent: TipsEvent) {
+        println(tipsEvent)
+        Gdx.app.postRunnable {
+            val messageWindow = tipWindow(tipsEvent.msg)
+            stage.addActor(messageWindow)
+            messageWindow.delayRemove(Runnable {
+                tipsEvent.resultReporter.report(Any())
+            })
+        }
+    }
+
 }

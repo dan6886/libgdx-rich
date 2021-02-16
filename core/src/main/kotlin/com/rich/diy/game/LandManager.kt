@@ -41,10 +41,15 @@ class LandManager private constructor() {
         tileSets = map.tileSets
         val landPoint: MapObjects = map.layers.get("landpoint").objects
         for (`object` in landPoint) {
+            if (`object`.properties.containsKey("test")) {
+                println("test")
+            }
             val x: Float = `object`.properties.get<Float>("x", Float::class.java)
             val y: Float = `object`.properties.get<Float>("y", Float::class.java)
             val type: String = `object`.properties.get<String>("type", String::class.java)
+            //相对editor从左往右
             val col = (x / cell_width).toInt()
+            //相对editor从下往上
             val row = (y / cell_height).toInt()
             val point = LandPoint(`object`, row, col, x.toInt(), y.toInt())
             point.type = type
@@ -53,6 +58,9 @@ class LandManager private constructor() {
         }
         val waypoints: MapObjects = map.layers.get("waypoint").objects
         for (`object` in waypoints) {
+            if (`object`.properties.containsKey("test")) {
+                println("test")
+            }
             val x: Float = `object`.properties.get<Float>("x", Float::class.java)
             val y: Float = `object`.properties.get<Float>("y", Float::class.java)
             val col = (x / cell_width).toInt()
@@ -68,6 +76,7 @@ class LandManager private constructor() {
             wayPointArray[row][col] = WayPoint(`object`, row, col, x.toInt(), y.toInt(), related)
             println("waypoint" + x + "|" + y + "|col:" + col + "row:" + row)
         }
+        println("地图解析完")
     }
 
     fun getLayerByName(name: String): TiledMapTileLayer {

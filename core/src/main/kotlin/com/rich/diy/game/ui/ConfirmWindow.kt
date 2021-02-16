@@ -3,6 +3,8 @@ package com.rich.diy.game.ui
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Colors
+import com.badlogic.gdx.scenes.scene2d.Action
+import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.Label
@@ -17,6 +19,8 @@ import io.reactivex.subjects.PublishSubject
 import ktx.actors.centerPosition
 import ktx.actors.onClick
 import ktx.scene2d.*
+import com.badlogic.gdx.scenes.scene2d.actions.Actions
+
 
 class ConfirmWindow : Window {
     private lateinit var subject: PublishSubject<ConfirmResult>
@@ -111,7 +115,7 @@ class ConfirmWindow : Window {
 }
 
 
-fun win(text: String, subject: PublishSubject<ConfirmResult>) = scene2d.window(title = "") {
+fun confirmWindow(text: String, subject: PublishSubject<ConfirmResult>) = scene2d.window(title = "") {
     val type = 0
 //    background("background")
     table {
@@ -146,4 +150,30 @@ fun win(text: String, subject: PublishSubject<ConfirmResult>) = scene2d.window(t
     x = 320F
     y = 120f
     pack()
+}
+
+fun tipWindow(text: String) = scene2d.window("") {
+    table {
+        defaults().pad(2f)
+        // Adding table children:
+        label(text, style = "decorative").cell(row = true)
+        // Cell of the nested actor is also available through "it":
+        it.spaceBottom(10f).row()
+    }
+
+    width = 300F
+    height = 80F
+
+    x = 320F
+    y = 120f
+    pack()
+}
+
+fun Actor.delayRemove(removed: Runnable) {
+    val dismissAction: Action = Actions.run {
+        this.remove()
+        removed.run()
+    }
+    val action: Action = Actions.delay(3f, dismissAction)
+    addAction(action)
 }

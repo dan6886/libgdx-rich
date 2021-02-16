@@ -13,16 +13,16 @@ import com.rich.diy.game.handler.ResultReporter
 
 class Actor1(name: String, texture: Texture?) : Actor() {
     private val region: TextureRegion
-    var currentWayPoint: WayPoint? = null
+    lateinit var currentWayPoint: WayPoint
     private var pre: WayPoint? = null
     var state = 1
     private var cash = 10000
     fun start() {}
-    fun getCurrent(): WayPoint? {
+    fun getCurrent(): WayPoint {
         return currentWayPoint
     }
 
-    fun setCurrent(current: WayPoint?) {
+    fun setCurrent(current: WayPoint) {
         this.currentWayPoint = current
     }
 

@@ -14,13 +14,7 @@ class CheckStartWalkHandler : BaseHandler() {
         return chain.process(s)
     }
 
-//    fun showSkip(text: String?): Any? {
-//        val reporter = ResultReporter<Any>()
-//        MainGame.Instance.showTipsWindow(text, reporter)
-//        return reporter.waitReport()
-//    }
-
-    fun waitClickStart(): Int {
-       return StartEvent("START_BUTTON").postAndWait()
+    private fun waitClickStart(): Int {
+        return StartEvent("START_BUTTON").postAndWait()
     }
 }

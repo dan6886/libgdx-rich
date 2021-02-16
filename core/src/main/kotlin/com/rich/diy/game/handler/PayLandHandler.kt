@@ -13,25 +13,23 @@ class PayLandHandler : BaseHandler() {
         showTipMessage("you should pay for 500$!")
         val b = checkCard()
         if (b) {
-            val confirmResult: ConfirmResult? = showCard("will you want to use card to pay free")
+            val confirmResult: ConfirmResult = showCard("will you want to use card to pay free")
             if (confirmResult!!.isOk) {
                 showTipMessage("i won't pay!!!")
             } else {
-                player!!.pay(player.getCurrent()!!.landPoint)
+                player!!.pay(player.getCurrent().landPoint)
                 // 抱怨
             }
         } else {
-            player!!.pay(player.getCurrent()!!.landPoint)
+            player!!.pay(player.getCurrent().landPoint)
             // 抱怨
         }
         return chain.process(s)
     }
 
     fun showTipMessage(text: String): Any? {
-        val reporter = ResultReporter<Any>()
-//        MainGame.Instance.showTipsWindow(text, reporter)
         return TipsEvent("TipsEvent").apply {
-            tips = text
+            msg = text
         }.postAndWait()
     }
 
@@ -41,8 +39,6 @@ class PayLandHandler : BaseHandler() {
     }
 
     private fun showCard(text: String): ConfirmResult {
-        val reporter: ResultReporter<ConfirmResult> = ResultReporter<ConfirmResult>()
-//        MainGame.Instance.showConfirmWindow(text, reporter)
         return CardEvent<ConfirmResult>("").postAndWait()
     }
 }
