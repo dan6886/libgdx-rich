@@ -1,8 +1,32 @@
-targetCompatibility = '1.8'
-apply plugin: "java"
-
-sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+eclipse.project.name = appName + '-core'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+dependencies {
+	api "com.badlogicgames.gdx:gdx:$gdxVersion"
+	api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+	api "io.github.libktx:ktx-vis-style:$ktxVisStyleVersion"
+	api "io.github.libktx:ktx-actors:$ktxActorsVersion"
+	api "io.github.libktx:ktx-collections:$ktxCollectionsVersion"
+	api "io.github.libktx:ktx-json:$ktxJsonVersion"
+	api "io.github.libktx:ktx-preferences:$ktxPreferencesVersion"
+	api "io.github.libktx:ktx-style:$ktxStyleVersion"
+	api "io.github.libktx:ktx-assets:$ktxAssetsVersion"
+	api "io.github.libktx:ktx-async:$ktxAsyncVersion"
+	api "io.github.libktx:ktx-assets-async:$ktxAssetsAsyncVersion"
+	api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+	api "io.github.libktx:ktx-freetype:$ktxFreetypeVersion"
+	api "io.github.libktx:ktx-freetype-async:$ktxFreetypeAsyncVersion"
+	api "io.github.libktx:ktx-tiled:$ktxTiledVersion"
+	api "io.github.libktx:ktx-log:$ktxLogVersion"
+	api "io.github.libktx:ktx-inject:$ktxInjectVersion"
+	api "io.github.libktx:ktx-app:$ktxAppVersion"
+	api "io.github.libktx:ktx-graphics:$ktxGraphicsVersion"
+	api "io.github.libktx:ktx-vis:$ktxVisVersion"
+	api "io.github.libktx:ktx-i18n:$ktxI18nVersion"
+	api "io.github.libktx:ktx-scene2d:$ktxScene2DVersion"
+	api "io.github.libktx:ktx-math:$ktxMathVersion"
+	compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.6'
+	implementation 'org.greenrobot:eventbus:3.1.1'
 
+
+}

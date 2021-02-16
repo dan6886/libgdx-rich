@@ -1,2 +1,1 @@
-include ':fonttool'
-include 'desktop', 'android', 'html', 'core'
+include 'core', 'lwjgl3'
